@@ -1,5 +1,8 @@
 package bookstore.utils.validator.exception;
 
+/**
+ * @author pollos_hermanos.
+ */
 public class ValidationException extends Exception {
     public ValidationException(String message) {
         super(message);

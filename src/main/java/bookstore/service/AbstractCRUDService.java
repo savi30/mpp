@@ -9,6 +9,9 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * @author pollos_hermanos.
+ */
 public class AbstractCRUDService<ID, T extends Entity<ID>> {
     protected Repository<ID, T> repository;
 
@@ -27,9 +30,8 @@ public class AbstractCRUDService<ID, T extends Entity<ID>> {
         return newEntity.get();
     }
 
-    public T save(T entity) throws ValidationException {
-        Optional<T> savedEntity = repository.save(entity);
-        return savedEntity.get();
+    public void save(T entity) throws ValidationException {
+        repository.save(entity);
     }
 
     public T delete(ID id) {
