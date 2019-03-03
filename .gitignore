@@ -26,3 +26,4 @@ MANIFEST.MF
 build/
 !gradle-wrapper.jar
 **/build/
+doc

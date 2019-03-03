@@ -3,12 +3,28 @@
  */
 package bookstore;
 
+import bookstore.domain.book.Book;
+import bookstore.repository.InMemoryRepository;
+import bookstore.repository.Repository;
+import bookstore.repository.book.BookInMemoryRepository;
+import bookstore.service.BookService;
+import bookstore.ui.Console;
+import bookstore.utils.validator.Validator;
+import bookstore.utils.validator.book.BookValidator;
+
+/**
+ * @author pollos_hermanos.
+ */
 public class App {
     public String getGreeting() {
         return "Hello world.";
     }
 
     public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+        Validator<Book> validator = new BookValidator();
+        Repository<Long, Book> repository = new BookInMemoryRepository(validator);
+        BookService bookService = new BookService(repository);
+        Console console = new Console(bookService);
+        console.runConsole();
     }
 }
