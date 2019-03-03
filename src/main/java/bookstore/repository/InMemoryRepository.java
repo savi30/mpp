@@ -4,12 +4,12 @@ import bookstore.domain.core.Entity;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
+/**
+ * @author pollos_hermanos.
+ */
 public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<ID, T> {
 
     private Map<ID, T> entities;
@@ -30,7 +30,7 @@ public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<
 
     @Override
     public Collection<T> findAll() {
-        return entities.entrySet().stream().map(Map.Entry::getValue).collect(Collectors.toSet());
+        return new HashSet<>(entities.values());
     }
 
     @Override
