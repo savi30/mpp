@@ -2,66 +2,74 @@ package bookstore.domain.book;
 
 import bookstore.domain.core.NamedEntity;
 
-import java.time.LocalDate;
-import java.util.Arrays;
-import java.util.Date;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 
 
 /**
  * @author pollos_hermanos.
  */
-public class Book extends NamedEntity<Long> {
+public class Book extends NamedEntity<String> {
     private String title;
-    private String author;
-    private LocalDate publishYear;
+    private List<NamedEntity> authors = new ArrayList<>();
+    private Timestamp publishYear;
+    private Double price;
+    private Integer quantity;
 
     public Book() {
     }
 
-    public Book(Long id, String name) {
-        super(id, name);
-        title = name;
-    }
-
-    public Book(Long id, String title, String author) {
+    public Book(String id, String title) {
         super(id, title);
         this.title = title;
-        this.author = author;
-    }
-
-    public Book(String title, String author) {
-        this.title = title;
-        this.author = author;
     }
 
     public String getTitle() {
         return title;
     }
 
-    public String getAuthor() {
-        return author;
-    }
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
-    }
 
-    public LocalDate getPublishYear() {
+    public Timestamp getPublishYear() {
         return publishYear;
     }
 
-    public void setPublishYear(LocalDate publishYear) {
+    public void setPublishYear(Timestamp publishYear) {
         this.publishYear = publishYear;
+    }
+
+    public Double getPrice() {
+        return price;
+    }
+
+    public void setPrice(Double price) {
+        this.price = price;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     @Override
     public String toString() {
-        return this.getId() + ". " + title + " - " + author +", " + publishYear;
+        return this.getId() + ". " + title + " - " + authors.toString() + "-" + publishYear
+                .toLocalDateTime() + "-" + quantity + "-" + price + "$";
     }
 
+    public List<NamedEntity> getAuthors() {
+        return authors;
+    }
+
+    public void setAuthors(List<NamedEntity> authors) {
+        this.authors = authors;
+    }
 }

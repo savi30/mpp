@@ -4,11 +4,8 @@ import bookstore.domain.user.User;
 import bookstore.repository.Repository;
 import bookstore.service.AbstractCRUDService;
 
-/**
- * @author pollos_hermanos.
- */
-public class UserService extends AbstractCRUDService<Long, User> {
-    public UserService(Repository<Long, User> repository) {
+public class UserService extends AbstractCRUDService<String, User> {
+    public UserService(Repository<String, User> repository) {
         this.repository = repository;
     }
 }

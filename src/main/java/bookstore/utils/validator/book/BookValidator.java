@@ -18,9 +18,6 @@ public class BookValidator implements Validator<Book> {
         if(entity.getTitle().isEmpty()){
             errors += "Title must not be empty\n";
         }
-        if (entity.getAuthor().isEmpty()) {
-            errors += "Author must not be empty\n";
-        }
 
         if(!errors.isEmpty())
             throw new ValidationException(errors);

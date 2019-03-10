@@ -1,6 +1,5 @@
 package bookstore.repository.user;
 
-import bookstore.domain.book.Book;
 import bookstore.domain.user.User;
 import bookstore.repository.InMemoryRepository;
 import bookstore.utils.validator.Validator;
@@ -12,38 +11,38 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.LocalDate;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class UserFileRepository extends InMemoryRepository<Long, User> {
+public class UserFileRepository extends InMemoryRepository<String, User> {
     private String fileName;
-    public UserFileRepository(Validator<User> validator, String fileName){
+
+    public UserFileRepository(Validator<User> validator, String fileName) {
         super(validator);
         this.fileName = fileName;
         loadData();
     }
-    private void loadData(){
+
+    private void loadData() {
         Path path = Paths.get(fileName);
 
-        try{
-            Files.lines(path).forEach(line ->{
+        try {
+            Files.lines(path).forEach(line -> {
                 List<String> items = Arrays.asList(line.split(","));
 
-                Long id = Long.valueOf(items.get(0));
+                String id = String.valueOf(items.get(0));
                 String name = items.get(1);
 
-
                 User user = new User(id, name);
-                try{
+                try {
                     super.save(user);
-                }catch (ValidationException ve){
+                } catch (ValidationException ve) {
                     ve.printStackTrace();
                 }
             });
 
-        }catch (IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
