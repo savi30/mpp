@@ -5,7 +5,6 @@ import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author pollos_hermanos.
