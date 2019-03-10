@@ -7,7 +7,7 @@ import bookstore.utils.validator.Validator;
 /**
  * @author pollos_hermanos.
  */
-public class BookInMemoryRepository extends InMemoryRepository<Long, Book> {
+public class BookInMemoryRepository extends InMemoryRepository<String, Book> {
     public BookInMemoryRepository(Validator<Book> validator) {
         super(validator);
     }

@@ -7,8 +7,8 @@ import bookstore.service.AbstractCRUDService;
 /**
  * @author pollos_hermanos.
  */
-public class BookService extends AbstractCRUDService<Long, Book> {
-    public BookService(Repository<Long, Book> repository) {
+public class BookService extends AbstractCRUDService<String, Book> {
+    public BookService(Repository<String, Book> repository) {
         this.repository = repository;
     }
 }

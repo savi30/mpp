@@ -35,7 +35,23 @@ public class SqlQueryBuilder {
     }
 
     public String build() {
-        return this.query;
+        String result = this.query;
+        this.query = "";
+        return result;
     }
 
+    public SqlQueryBuilder join(String value) {
+        this.query += " JOIN " + value + " ";
+        return this;
+    }
+
+    public SqlQueryBuilder on(String value) {
+        this.query += " ON " + value + " ";
+        return this;
+    }
+
+    public SqlQueryBuilder groupBy(String... value) {
+        this.query += " GROUP BY " + String.join(",", value) + " ";
+        return this;
+    }
 }

@@ -9,7 +9,6 @@ import bookstore.utils.validator.exception.ValidationException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.time.LocalDate;
 import java.util.List;
 
 /**
@@ -43,7 +42,7 @@ public class Console {
     private void addBooks() {
         while (true) {
             Book book = readBook();
-            if (book == null || book.getId() < 0) {
+            if (book == null) {
                 break;
             }
             try {
@@ -59,17 +58,15 @@ public class Console {
 
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
         try {
-            Long id = Long.valueOf(bufferRead.readLine());// ...
+            String id = String.valueOf(bufferRead.readLine());// ...
             String title = bufferRead.readLine();
             String author = bufferRead.readLine();
             String dateString = bufferRead.readLine();
-            LocalDate date = LocalDate.parse(dateString);
 
             Book book = new Book(title, author);
             book.setId(id);
-            book.setPublishYear(date);
 
-            return book;
+            return new Book(id, title);
         } catch (IOException ex) {
             ex.printStackTrace();
         }

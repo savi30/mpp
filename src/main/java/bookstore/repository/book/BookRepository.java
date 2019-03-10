@@ -6,6 +6,6 @@ import bookstore.repository.Repository;
 /**
  * @author pollos_hermanos.
  */
-public interface BookRepository extends Repository<Long, Book> {
+public interface BookRepository extends Repository<String, Book> {
 
 }

@@ -11,7 +11,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
-import java.time.LocalDate;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -19,38 +20,38 @@ import java.util.Optional;
 /**
  * @author pollos_hermanos.
  */
-public class BookFileRepository extends InMemoryRepository<Long, Book> {
+public class BookFileRepository extends InMemoryRepository<String, Book> {
     private String fileName;
 
-    public BookFileRepository(Validator<Book> validator, String fileName){
+    public BookFileRepository(Validator<Book> validator, String fileName) {
         super(validator);
         this.fileName = fileName;
         loadData();
     }
 
-    private void loadData(){
+    private void loadData() {
         Path path = Paths.get(fileName);
 
-        try{
-            Files.lines(path).forEach(line ->{
+        try {
+            Files.lines(path).forEach(line -> {
                 List<String> items = Arrays.asList(line.split(","));
 
-                Long id = Long.valueOf(items.get(0));
+                String id = String.valueOf(items.get(0));
                 String title = items.get(1);
                 String author = items.get(2);
-                LocalDate date = LocalDate.parse(items.get(3));
+                LocalDateTime date = LocalDateTime.parse(items.get(3));
 
                 Book book = new Book(title, author);
                 book.setId(id);
-                book.setPublishYear(date);
-                try{
+                book.setPublishYear(Timestamp.valueOf(date));
+                try {
                     super.save(book);
-                }catch (ValidationException ve){
+                } catch (ValidationException ve) {
                     ve.printStackTrace();
                 }
             });
 
-        }catch (IOException ex){
+        } catch (IOException ex) {
             ex.printStackTrace();
         }
     }
@@ -60,8 +61,8 @@ public class BookFileRepository extends InMemoryRepository<Long, Book> {
 
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             bufferedWriter.write(
-                    entity.getId() + "," + entity.getTitle() + "," + entity.getAuthor()
-                    + "," + entity.getPublishYear());
+                    entity.getId() + "," + entity.getTitle() + "," + entity.getAuthors().toString()
+                            + "," + entity.getPublishYear());
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
