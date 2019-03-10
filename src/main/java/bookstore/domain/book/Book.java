@@ -61,7 +61,7 @@ public class Book extends NamedEntity<Long> {
 
     @Override
     public String toString() {
-        return this.getId() + ". " + title + " - " + author;
+        return this.getId() + ". " + title + " - " + author +", " + publishYear;
     }
 
 }
