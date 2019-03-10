@@ -32,9 +32,8 @@ public class BookValidatorTest {
             assertEquals("id must not be null\nTitle must not be empty\nAuthor must not be empty\n", e.getMessage());
         }
         try {
-            book.setId(Integer.toUnsignedLong(1));
+            book.setId("1");
             book.setTitle("Title");
-            book.setAuthor("Author");
             validator.validate(book);
         } catch (ValidationException e) {
             fail();
