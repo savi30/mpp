@@ -2,7 +2,10 @@ package bookstore.domain.book;
 
 import bookstore.domain.core.NamedEntity;
 
+import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -11,7 +14,7 @@ import java.util.Date;
 public class Book extends NamedEntity<Long> {
     private String title;
     private String author;
-    private Date publishYear;
+    private LocalDate publishYear;
 
     public Book() {
     }
@@ -48,11 +51,11 @@ public class Book extends NamedEntity<Long> {
         this.author = author;
     }
 
-    public Date getPublishYear() {
+    public LocalDate getPublishYear() {
         return publishYear;
     }
 
-    public void setPublishYear(Date publishYear) {
+    public void setPublishYear(LocalDate publishYear) {
         this.publishYear = publishYear;
     }
 
