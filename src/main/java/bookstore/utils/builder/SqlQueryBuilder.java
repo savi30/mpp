@@ -54,4 +54,34 @@ public class SqlQueryBuilder {
         this.query += " GROUP BY " + String.join(",", value) + " ";
         return this;
     }
+
+    public SqlQueryBuilder update(String value) {
+        this.query += " UPDATE " + value + " ";
+        return this;
+    }
+
+    public SqlQueryBuilder set(String... value) {
+        this.query += " SET " + String.join(",", value) + " ";
+        return this;
+    }
+
+    public SqlQueryBuilder delete(String value) {
+        this.query += " DELETE FROM " + value + " ";
+        return this;
+    }
+
+    public SqlQueryBuilder insert(String value) {
+        this.query += " INSERT INTO " + value + " ";
+        return this;
+    }
+
+    public SqlQueryBuilder fields(String... value) {
+        this.query += " (" + String.join(",", value) + ") ";
+        return this;
+    }
+
+    public SqlQueryBuilder values(String... value) {
+        this.query += " VALUES (" + String.join(",", value) + ") ";
+        return this;
+    }
 }

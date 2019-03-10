@@ -18,8 +18,8 @@ public class BookServiceTest {
     @Before
     public void setUp() throws Exception {
         bookService = new BookService(new BookInMemoryRepository(new BookValidator()));
-        book1 = new Book(Integer.toUnsignedLong(1), "My First Book", "Me");
-        book2 = new Book(Integer.toUnsignedLong(2), "My Second Book", "Me");
+        book1 = new Book("1", "My First Book");
+        book2 = new Book("2", "My Second Book");
         bookService.save(book1);
         bookService.save(book2);
     }
@@ -33,8 +33,8 @@ public class BookServiceTest {
 
     @Test
     public void findById() {
-        assertEquals("My First Book", bookService.findById(Integer.toUnsignedLong(1)).getTitle());
-        assertEquals("My Second Book", bookService.findById(Integer.toUnsignedLong(2)).getTitle());
+        assertEquals("My First Book", bookService.findById("1").getTitle());
+        assertEquals("My Second Book", bookService.findById("2").getTitle());
     }
 
     @Test
@@ -46,20 +46,20 @@ public class BookServiceTest {
 
     @Test
     public void update() throws Exception {
-        Book updatedBook = new Book(Integer.toUnsignedLong(2), "Changed Title", "Still me");
+        Book updatedBook = new Book("2", "Changed Title");
         bookService.update(updatedBook);
-        assertEquals("Changed Title", bookService.findById(Integer.toUnsignedLong(2)).getTitle());
-        assertEquals("My First Book", bookService.findById(Integer.toUnsignedLong(1)).getTitle());
+        assertEquals("Changed Title", bookService.findById("2").getTitle());
+        assertEquals("My First Book", bookService.findById("1").getTitle());
     }
 
     @Test
     public void save() throws Exception {
-        Book updatedBook = new Book(Integer.toUnsignedLong(1), "Changed Title", "Still me");
+        Book updatedBook = new Book("1", "Changed Title");
         bookService.save(updatedBook);
         assert(bookService.findAll().size() == 2);
         assert(bookService.findAll().contains(book1));
         assert(bookService.findAll().contains(book2));
-        updatedBook.setId(Integer.toUnsignedLong(3));
+        updatedBook.setId("3");
         bookService.save(updatedBook);
         assert(bookService.findAll().size() == 3);
         assert(bookService.findAll().contains(book1));
@@ -70,7 +70,7 @@ public class BookServiceTest {
     @Test
     public void delete() {
         assert(bookService.findAll().size() == 2);
-        bookService.delete(Integer.toUnsignedLong(1));
+        bookService.delete("1");
         assert(bookService.findAll().size() == 1);
         assert(bookService.findAll().contains(book2));
     }

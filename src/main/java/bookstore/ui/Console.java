@@ -27,6 +27,8 @@ public class Console {
         //addBooks();
         printAllBooks();
         printAllUsers();
+        this.bookService.delete("1");
+        this.bookService.buy("2","3");
     }
 
     private void printAllBooks() {
