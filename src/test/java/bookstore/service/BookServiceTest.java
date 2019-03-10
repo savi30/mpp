@@ -1,8 +1,8 @@
 package bookstore.service;
 
 import bookstore.domain.book.Book;
-import bookstore.repository.Repository;
 import bookstore.repository.book.BookInMemoryRepository;
+import bookstore.service.book.BookService;
 import bookstore.utils.validator.book.BookValidator;
 import org.junit.After;
 import org.junit.Before;
@@ -77,7 +77,7 @@ public class BookServiceTest {
 
     @Test
     public void getAllBooks() {
-        assert (bookService.getAllBooks().contains(book1));
-        assert (bookService.getAllBooks().contains(book2));
+        assert (bookService.findAll().contains(book1));
+        assert (bookService.findAll().contains(book2));
     }
 }

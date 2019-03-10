@@ -1,13 +1,13 @@
 package bookstore.ui;
 
 import bookstore.domain.book.Book;
-import bookstore.service.BookService;
+import bookstore.service.book.BookService;
 import bookstore.utils.validator.exception.ValidationException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.Set;
+import java.util.List;
 
 /**
  * @author pollos_hermanos.
@@ -15,35 +15,35 @@ import java.util.Set;
 public class Console {
     private BookService bookService;
 
-    public Console(BookService bookService){
+    public Console(BookService bookService) {
         this.bookService = bookService;
     }
 
     public void runConsole() {
-        addBooks();
+        //addBooks();
         printAllBooks();
     }
 
-    private void printAllBooks(){
-        Set<Book> books = bookService.getAllBooks();
+    private void printAllBooks() {
+        List<Book> books = bookService.findAll();
         books.forEach(System.out::println);
     }
 
     private void addBooks() {
-        while(true){
+        while (true) {
             Book book = readBook();
-            if(book == null || book.getId() < 0){
+            if (book == null || book.getId() < 0) {
                 break;
             }
-            try{
+            try {
                 bookService.save(book);
-            }catch (ValidationException e){
+            } catch (ValidationException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    private Book readBook(){
+    private Book readBook() {
         System.out.println("Read book {id, title, author}");
 
         BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
