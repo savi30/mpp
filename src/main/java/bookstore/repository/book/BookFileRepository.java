@@ -79,4 +79,32 @@ public class BookFileRepository extends InMemoryRepository<String, Book> {
         return Optional.empty();
     }
 
+    @Override
+    public Optional<Book> delete(String id){
+        Optional<Book> optional = super.delete(id);
+        writeAllToFile();
+        return optional;
+    }
+
+    @Override
+    public Optional<Book> update(Book entity)throws ValidationException {
+        Optional<Book> optional = super.update(entity);
+        writeAllToFile();
+        return optional;
+    }
+
+    private void writeAllToFile(){
+        Path path = Paths.get(fileName);
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
+            entities.values().forEach(book -> {try{
+                bufferedWriter.write(book.getId() + "," +book.getTitle() + "," + book.getAuthors()
+                        + "," + book.getPublishYear()+"\n");
+            }catch (IOException e){
+                e.printStackTrace();
+            }});
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
 }

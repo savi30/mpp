@@ -14,6 +14,7 @@ import java.nio.file.StandardOpenOption;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 public class UserFileRepository extends InMemoryRepository<String, User> {
     private String fileName;
@@ -59,6 +60,19 @@ public class UserFileRepository extends InMemoryRepository<String, User> {
         }
     }
 
+    private void writeAllToFile(){
+        Path path = Paths.get(fileName);
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
+            entities.values().forEach(user -> {try{
+                bufferedWriter.write(user.getId() + "," +user.getName() + "\n");
+            }catch (IOException e){
+                e.printStackTrace();
+            }});
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public Optional<User> save(User entity) throws ValidationException {
         Optional<User> optional = super.save(entity);
@@ -67,5 +81,19 @@ public class UserFileRepository extends InMemoryRepository<String, User> {
         }
         saveToFile(entity);
         return Optional.empty();
+    }
+
+    @Override
+    public Optional<User> delete(String id){
+        Optional<User> optional = super.delete(id);
+        writeAllToFile();
+        return optional;
+    }
+
+    @Override
+    public Optional<User> update(User entity)throws ValidationException {
+        Optional<User> optional = super.update(entity);
+        writeAllToFile();
+        return optional;
     }
 }
