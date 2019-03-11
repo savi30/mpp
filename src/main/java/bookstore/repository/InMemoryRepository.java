@@ -5,14 +5,13 @@ import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * @author pollos_hermanos.
  */
 public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<ID, T> {
 
-    private Map<ID, T> entities;
+    protected Map<ID, T> entities;
     private Validator<T> validator;
 
     public InMemoryRepository(Validator<T> validator) {
@@ -48,6 +47,11 @@ public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<
             throw new IllegalArgumentException("id must not be null");
         }
         return Optional.ofNullable(entities.remove(id));
+    }
+
+    @Override
+    public Optional<T> buy(ID bookId, ID clientId) {
+        return Optional.empty();
     }
 
     @Override

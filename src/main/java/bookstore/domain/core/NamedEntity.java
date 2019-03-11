@@ -2,6 +2,7 @@ package bookstore.domain.core;
 
 /**
  * Generic class for an Entity with an ID and a name.
+ *
  * @author pollos_hermanos.
  */
 public class NamedEntity<ID> extends Entity<ID> {
@@ -12,7 +13,8 @@ public class NamedEntity<ID> extends Entity<ID> {
         this.name = name;
     }
 
-    public NamedEntity(){}
+    public NamedEntity() {
+    }
 
     public String getName() {
         return name;
@@ -20,5 +22,10 @@ public class NamedEntity<ID> extends Entity<ID> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public String toString() {
+        return this.getId() + " " + this.getName();
     }
 }
