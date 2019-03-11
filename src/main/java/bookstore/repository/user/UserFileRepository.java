@@ -90,9 +90,9 @@ public class UserFileRepository extends InMemoryRepository<String, User> {
     public Optional<User> save(User entity) throws ValidationException {
         Optional<User> optional = super.save(entity);
         if (optional.isPresent()) {
-            saveToFile(entity);
             return optional;
         }
+        saveToFile(entity);
         return Optional.empty();
     }
 
