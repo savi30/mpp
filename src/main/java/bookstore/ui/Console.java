@@ -13,6 +13,7 @@ import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -54,18 +55,24 @@ public class Console {
                             User user = new User(items.get(0), items.get(1));
                             try {
                                 userService.save(user);
+                                System.out.println(user + " was added successfully");
                             } catch (ValidationException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println(user + " was added successfully");
                         }
                         break;
                     }
-                    case "deleteUser":
+                    case "deleteUser": {
                         System.out.println("Delete user with id:");
                         params = bufferedReader.readLine();
-                        userService.delete(params);
+                        try {
+                            userService.delete(params);
+                        } catch (NoSuchElementException e) {
+                            e.printStackTrace();
+                        }
+
                         break;
+                    }
                     case "updateUser": {
                         System.out.println("Update user {id, Name}");
                         params = bufferedReader.readLine();
@@ -76,10 +83,10 @@ public class Console {
                             User user = new User(items.get(0), items.get(1));
                             try {
                                 userService.update(user);
-                            } catch (ValidationException e) {
+                                System.out.println(user + " was updated successfully");
+                            } catch (ValidationException | NoSuchElementException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println(user + " was updated successfully");
                         }
                         break;
                     }
@@ -90,13 +97,13 @@ public class Console {
                         if (items.size() != 6) {
                             System.out.println("Wrong parameters, should be: id, Title, Authors, timestamp, price, quantity!");
                         } else {
-                            Book book = parseBook(items);
                             try {
+                                Book book = parseBook(items);
                                 bookService.save(book);
-                            } catch (ValidationException e) {
+                                System.out.println("Book was added successfully!");
+                            } catch (ValidationException | IllegalArgumentException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println(book + " was added successfully");
                         }
                         break;
                     }
@@ -107,20 +114,24 @@ public class Console {
                         if (items.size() != 6) {
                             System.out.println("Wrong parameters, should be: id, Title, Authors, timestamp, price, quantity!");
                         } else {
-                            Book book = parseBook(items);
                             try {
+                                Book book = parseBook(items);
                                 bookService.update(book);
-                            } catch (ValidationException e) {
+                                System.out.println("Book was updated successfully!");
+                            } catch (ValidationException | IllegalArgumentException | NoSuchElementException e) {
                                 e.printStackTrace();
                             }
-                            System.out.println(book + " was updated successfully");
                         }
                         break;
                     }
                     case "deleteBook":{
                         System.out.println("Delete book with id:");
                         params = bufferedReader.readLine();
-                        bookService.delete(params);
+                        try {
+                            bookService.delete(params);
+                        }catch (NoSuchElementException e){
+                            e.printStackTrace();
+                        }
                         break;
                     }
                     case "printBooks":{
@@ -213,7 +224,7 @@ public class Console {
         users.forEach(System.out::println);
     }
 
-    private Book parseBook(List<String> items) {
+    private Book parseBook(List<String> items) throws IllegalArgumentException {
         Book book = new Book(items.get(0), items.get(1));
         List<String> authors = Arrays.asList(items.get(2).split(" "));
         book.setAuthors(authors.stream().map(a -> new NamedEntity(1, a))
