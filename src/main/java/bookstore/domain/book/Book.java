@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public class Book extends NamedEntity<String> {
     private String title;
     private List<NamedEntity> authors = new ArrayList<>();
-    private Timestamp publishYear;
+    private Timestamp publishYear = null;
     private Double price;
     private Integer quantity;
 

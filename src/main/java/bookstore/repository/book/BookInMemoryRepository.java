@@ -13,6 +13,13 @@ public class BookInMemoryRepository extends InMemoryRepository<String, Book> {
     public BookInMemoryRepository(Validator<Book> validator) {
         super(validator);
     }
+
+    /**
+     * Buy a book.
+     * @param bookId - id of the bought book
+     * @param clientId - id of the client who buys
+     * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
+     */
     @Override
     public Optional<Book> buy(String bookId, String clientId){
         Optional<Book> optional = findById(bookId);

@@ -11,25 +11,24 @@ public class BookValidator implements Validator<Book> {
     @Override
     public void validate(Book entity) throws ValidationException {
         String errors = "";
-        if(entity.getId() == null){
-            errors += "id must not be null\n";
+        if(entity.getId().isEmpty()){
+            errors += "id must not be empty!\n";
         }
-        if(entity.getTitle().isEmpty()){
-            errors += "Title must not be empty\n";
-        }
-        if(!entity.getTitle().matches("[a-zA-Z0-9 ]*")){
+        if(!entity.getTitle().matches("[a-zA-Z0-9 ]+")){
             errors += "Title must contain only letters, numbers and spaces!\n";
         }
         if(entity.getAuthorsString().isEmpty()){
             errors += "Book must at least one author!\n";
         }
-        if(!entity.getAuthorsString().matches("[a-zA-Z0-9 ]*"))
+        else if(!entity.getAuthorsString().matches("[a-zA-Z0-9 ]*"))
             errors += "Author names must contain only letters, numbers, and spaces!\n";
         if(entity.getPrice() < 0)
             errors += "Price can't be negative!\n";
         if(entity.getQuantity() < 0){
             errors += "Quantity can't be negative!\n";
         }
+        if(entity.getPublishYear() == null)
+            errors += "Publish year can't be null!\n";
         if(!errors.isEmpty())
             throw new ValidationException(errors);
     }

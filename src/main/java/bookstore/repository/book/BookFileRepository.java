@@ -32,6 +32,9 @@ public class BookFileRepository extends BookInMemoryRepository {
         loadData();
     }
 
+    /**
+     * Load all books from the file into memory.
+     */
     private void loadData() {
         Path path = Paths.get(fileName);
 
@@ -64,6 +67,9 @@ public class BookFileRepository extends BookInMemoryRepository {
         }
     }
 
+    /**
+     * Write book to file.
+     */
     private void saveToFile(Book entity) {
         Path path = Paths.get(fileName);
 
@@ -77,6 +83,12 @@ public class BookFileRepository extends BookInMemoryRepository {
         }
     }
 
+    /**
+     * Buy a book and write changes to file.
+     * @param bookId - id of the bought book
+     * @param clientId - id of the client who buys
+     * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
+     */
     @Override
     public Optional<Book> buy(String bookId, String clientId){
         Optional<Book> optional = super.buy(bookId, clientId);
@@ -87,6 +99,10 @@ public class BookFileRepository extends BookInMemoryRepository {
         return Optional.empty();
     }
 
+    /**
+     * Add a book and write changes to file.
+     * @return an {@code Optional} encapsulating the added book.
+     */
     @Override
     public Optional<Book> save(Book entity) throws ValidationException {
         Optional<Book> optional = super.save(entity);
@@ -97,6 +113,10 @@ public class BookFileRepository extends BookInMemoryRepository {
         return Optional.empty();
     }
 
+    /**
+     * Delete a book and write changes to file.
+     * @return an {@code Optional} encapsulating the deleted book or empty if there is no such book.
+     */
     @Override
     public Optional<Book> delete(String id){
         Optional<Book> optional = super.delete(id);
@@ -107,6 +127,10 @@ public class BookFileRepository extends BookInMemoryRepository {
         return Optional.empty();
     }
 
+    /**
+     * Update a book and write changes to file.
+     * @return an {@code Optional} encapsulating the updated book or empty if there is no such book.
+     */
     @Override
     public Optional<Book> update(Book entity)throws ValidationException {
         Optional<Book> optional = super.update(entity);
@@ -117,6 +141,9 @@ public class BookFileRepository extends BookInMemoryRepository {
         return Optional.empty();
     }
 
+    /**
+     * Write all to file.
+     */
     private void writeAllToFile(){
         Path path = Paths.get(fileName);
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {

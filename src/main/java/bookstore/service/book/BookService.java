@@ -18,10 +18,20 @@ public class BookService extends AbstractCRUDService<String, Book> {
         this.repository = repository;
     }
 
+    /**
+     * Buy a book.
+     * @param bookId - id of the bought book
+     * @param clientId - id of the client who buys
+     * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
+     */
     public Optional<Book> buy(String bookId, String clientId) {
         return repository.buy(bookId, clientId);
     }
 
+    /**
+     * Return all books whose title contain the given string.
+     * @return a set with the filtered books.
+     */
     public Set<Book> filterBooksByTitle(String s){
         Iterable<Book> books = repository.findAll();
         return StreamSupport.stream(books.spliterator(), false)
@@ -29,6 +39,10 @@ public class BookService extends AbstractCRUDService<String, Book> {
 
     }
 
+    /**
+     * Return all books whose authors contain the given string.
+     * @return a set with the filtered books.
+     */
     public Set<Book> filterBooksByAuthor(String s){
         Iterable<Book> books = repository.findAll();
         return StreamSupport.stream(books.spliterator(), false)
@@ -36,12 +50,20 @@ public class BookService extends AbstractCRUDService<String, Book> {
 
     }
 
+    /**
+     * Return all books whose date is in the given range.
+     * @return a set with the filtered books.
+     */
     public Set<Book> filterBooksByDate(Timestamp t1, Timestamp t2){
         Iterable<Book> books = repository.findAll();
         return StreamSupport.stream(books.spliterator(), false)
                 .filter(book -> t1.before(book.getPublishYear()) && t2.after(book.getPublishYear())).collect(Collectors.toSet());
     }
 
+    /**
+     * Return all books whose price is in the given range.
+     * @return a set with the filtered books.
+     */
     public Set<Book> filterBooksByPrice(Double p1, Double p2){
         Iterable<Book> books = repository.findAll();
         return StreamSupport.stream(books.spliterator(), false)
