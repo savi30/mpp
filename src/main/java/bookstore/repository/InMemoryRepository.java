@@ -12,7 +12,7 @@ import java.util.*;
 public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<ID, T> {
 
     protected Map<ID, T> entities;
-    private Validator<T> validator;
+    protected Validator<T> validator;
 
     public InMemoryRepository(Validator<T> validator) {
         this.validator = validator;

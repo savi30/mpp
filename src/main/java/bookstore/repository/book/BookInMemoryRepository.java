@@ -3,6 +3,7 @@ package bookstore.repository.book;
 import bookstore.domain.book.Book;
 import bookstore.repository.InMemoryRepository;
 import bookstore.utils.validator.Validator;
+import bookstore.utils.validator.exception.ValidationException;
 
 import java.util.Optional;
 
@@ -28,5 +29,17 @@ public class BookInMemoryRepository extends InMemoryRepository<String, Book> {
             return optional;
         }
         return Optional.empty();
+    }
+    @Override
+    public Optional<Book> save(Book entity) throws ValidationException{
+        if (entity == null) {
+            throw new IllegalArgumentException("entity must not be null");
+        }
+        validator.validate(entity);
+        Optional<Book> optional = Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
+        if( optional.isPresent() && optional.get()!= entity){
+            entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
+        }
+        return optional;
     }
 }
