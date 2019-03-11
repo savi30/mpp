@@ -5,6 +5,7 @@ import bookstore.domain.core.NamedEntity;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 /**
@@ -13,7 +14,7 @@ import java.util.List;
 public class Book extends NamedEntity<String> {
     private String title;
     private List<NamedEntity> authors = new ArrayList<>();
-    private Timestamp publishYear;
+    private Timestamp publishYear = null;
     private Double price;
     private Integer quantity;
 
@@ -61,12 +62,17 @@ public class Book extends NamedEntity<String> {
 
     @Override
     public String toString() {
-        return this.getId() + ". " + title + " - " + authors.toString() + "-" + publishYear
-                .toLocalDateTime() + "-" + quantity + "-" + price + "$";
+        return this.getId() + ". " + title + " - " + getAuthorsString() + " - " + publishYear
+                .toLocalDateTime() + " - " + quantity + " - " + price + "$";
     }
 
     public List<NamedEntity> getAuthors() {
         return authors;
+    }
+
+    public String getAuthorsString(){
+        return authors.stream().map(author -> author.getName())
+                .collect(Collectors.joining(" "));
     }
 
     public void setAuthors(List<NamedEntity> authors) {
