@@ -1,9 +1,11 @@
 package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
+import bookstore.domain.core.NamedEntity;
 import bookstore.repository.InMemoryRepository;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
+import org.checkerframework.checker.nullness.Opt;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -16,11 +18,12 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * @author pollos_hermanos.
  */
-public class BookFileRepository extends InMemoryRepository<String, Book> {
+public class BookFileRepository extends BookInMemoryRepository {
     private String fileName;
 
     public BookFileRepository(Validator<Book> validator, String fileName) {
@@ -38,12 +41,17 @@ public class BookFileRepository extends InMemoryRepository<String, Book> {
 
                 String id = String.valueOf(items.get(0));
                 String title = items.get(1);
-                String author = items.get(2);
-                LocalDateTime date = LocalDateTime.parse(items.get(3));
+                List<String> authors = Arrays.asList(items.get(2).split(" "));
+                Timestamp date = Timestamp.valueOf(items.get(3));
+                Integer quantity = Integer.valueOf(items.get(5));
+                Double price = Double.valueOf(items.get(4));
 
-                Book book = new Book(title, author);
-                book.setId(id);
-                book.setPublishYear(Timestamp.valueOf(date));
+                Book book = new Book(id, title);
+                book.setAuthors(authors.stream().map(a -> new NamedEntity(1, a))
+                        .collect(Collectors.toList()));
+                book.setPublishYear(date);
+                book.setPrice(price);
+                book.setQuantity(quantity);
                 try {
                     super.save(book);
                 } catch (ValidationException ve) {
@@ -61,8 +69,8 @@ public class BookFileRepository extends InMemoryRepository<String, Book> {
 
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
             bufferedWriter.write(
-                    entity.getId() + "," + entity.getTitle() + "," + entity.getAuthors().toString()
-                            + "," + entity.getPublishYear());
+                    entity.getId() + "," +entity.getTitle() + "," + entity.getAuthorsString() + ","
+                            + entity.getPublishYear() + "," + entity.getPrice() + "," + entity.getQuantity());
             bufferedWriter.newLine();
         } catch (IOException e) {
             e.printStackTrace();
@@ -70,35 +78,51 @@ public class BookFileRepository extends InMemoryRepository<String, Book> {
     }
 
     @Override
+    public Optional<Book> buy(String bookId, String clientId){
+        Optional<Book> optional = super.buy(bookId, clientId);
+        if(optional.isPresent()){
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
+    }
+
+    @Override
     public Optional<Book> save(Book entity) throws ValidationException {
         Optional<Book> optional = super.save(entity);
         if (optional.isPresent()) {
+            saveToFile(entity);
             return optional;
         }
-        saveToFile(entity);
         return Optional.empty();
     }
 
     @Override
     public Optional<Book> delete(String id){
         Optional<Book> optional = super.delete(id);
-        writeAllToFile();
-        return optional;
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
     }
 
     @Override
     public Optional<Book> update(Book entity)throws ValidationException {
         Optional<Book> optional = super.update(entity);
-        writeAllToFile();
-        return optional;
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
     }
 
     private void writeAllToFile(){
         Path path = Paths.get(fileName);
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
             entities.values().forEach(book -> {try{
-                bufferedWriter.write(book.getId() + "," +book.getTitle() + "," + book.getAuthors()
-                        + "," + book.getPublishYear()+"\n");
+                bufferedWriter.write(book.getId() + "," +book.getTitle() + "," + book.getAuthorsString()
+                        + "," + book.getPublishYear() + "," + book.getPrice() + "," + book.getQuantity() +"\n");
             }catch (IOException e){
                 e.printStackTrace();
             }});

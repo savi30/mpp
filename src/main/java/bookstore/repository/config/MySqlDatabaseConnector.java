@@ -14,7 +14,7 @@ public final class MySqlDatabaseConnector {
     }
 
     public static Connection getConnection() throws SQLException {
-        if (connection == null) {
+        if (connection == null || connection.isClosed()) {
             connection = DriverManager.getConnection(CONNECTION_STRING, USER, PASSWORD);
         }
         return connection;

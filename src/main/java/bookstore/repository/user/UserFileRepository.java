@@ -77,23 +77,29 @@ public class UserFileRepository extends InMemoryRepository<String, User> {
     public Optional<User> save(User entity) throws ValidationException {
         Optional<User> optional = super.save(entity);
         if (optional.isPresent()) {
+            saveToFile(entity);
             return optional;
         }
-        saveToFile(entity);
         return Optional.empty();
     }
 
     @Override
     public Optional<User> delete(String id){
         Optional<User> optional = super.delete(id);
-        writeAllToFile();
-        return optional;
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
     }
 
     @Override
     public Optional<User> update(User entity)throws ValidationException {
         Optional<User> optional = super.update(entity);
-        writeAllToFile();
-        return optional;
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
     }
 }

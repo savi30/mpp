@@ -11,7 +11,7 @@ public class BookTest {
 
     @Before
     public void setUp() throws Exception {
-        book = new Book(Integer.toUnsignedLong(1), "Title", "Author");
+        book = new Book("1", "Title");
     }
 
     @After
@@ -25,20 +25,9 @@ public class BookTest {
     }
 
     @Test
-    public void getAuthorTest() {
-        assertEquals("Authors should be the same", book.getAuthor(), "Author");
-    }
-
-    @Test
     public void setTitleTest() {
         book.setTitle("New Title");
         assertEquals("Titles should be the same", book.getTitle(), "New Title");
-    }
-
-    @Test
-    public void setAuthorTest() {
-        book.setAuthor("New Author");
-        assertEquals("Authors should be the same", book.getAuthor(), "New Author");
     }
 
     @Test
