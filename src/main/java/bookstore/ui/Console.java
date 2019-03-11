@@ -31,12 +31,12 @@ public class Console {
     public void runConsole() {
         String params, cmd;
 
-        BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(System.in));
         label:
         while (true) {
             try {
                 System.out.println(">>  ");
-                cmd = bufferRead.readLine();
+                cmd = bufferedReader.readLine();
                 switch (cmd) {
                     case "exit":
                         break label;
@@ -46,7 +46,7 @@ public class Console {
                     }
                     case "addUser": {
                         System.out.println("Add user {id, Name}");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         List<String> items = Arrays.asList(params.split(","));
                         if (items.size() != 2) {
                             System.out.println("Wrong parameters, should be: id, name!");
@@ -63,12 +63,12 @@ public class Console {
                     }
                     case "deleteUser":
                         System.out.println("Delete user with id:");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         userService.delete(params);
                         break;
                     case "updateUser": {
                         System.out.println("Update user {id, Name}");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         List<String> items = Arrays.asList(params.split(","));
                         if (items.size() != 2) {
                             System.out.println("Wrong parameters, should be: id, name!");
@@ -85,7 +85,7 @@ public class Console {
                     }
                     case "addBook": {
                         System.out.println("Add Book {id, Title, Authors, timestamp, price, quantity}");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         List<String> items = Arrays.asList(params.split(","));
                         if (items.size() != 6) {
                             System.out.println("Wrong parameters, should be: id, Title, Authors, timestamp, price, quantity!");
@@ -102,7 +102,7 @@ public class Console {
                     }
                     case "updateBook": {
                         System.out.println("Update Book {id, Title, Authors, timestamp, price, quantity}");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         List<String> items = Arrays.asList(params.split(","));
                         if (items.size() != 6) {
                             System.out.println("Wrong parameters, should be: id, Title, Authors, timestamp, price, quantity!");
@@ -119,7 +119,7 @@ public class Console {
                     }
                     case "deleteBook":{
                         System.out.println("Delete book with id:");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         bookService.delete(params);
                         break;
                     }
@@ -133,7 +133,7 @@ public class Console {
                     }
                     case "buyBook":{
                         System.out.println("Buy book {bookId, userId}");
-                        params = bufferRead.readLine();
+                        params = bufferedReader.readLine();
                         List<String > items = Arrays.asList(params.split(","));
                         if(items.size() != 2){
                             System.out.println("Wrong parameters, should be: bookId, userId!");
@@ -147,6 +147,50 @@ public class Console {
                                 System.out.println("Book not in stock!");
                             }
                         }
+                        break;
+                    }
+                    case "filterBooksByTitle":{
+                        System.out.println("Filter book by title:");
+                        params = bufferedReader.readLine();
+                        bookService.filterBooksByTitle(params).forEach(System.out::println);
+                        break;
+                    }
+                    case "filterBooksByAuthor":{
+                        System.out.println("Filter books by author:");
+                        params = bufferedReader.readLine();
+                        bookService.filterBooksByAuthor(params).forEach(System.out::println);
+                        break;
+                    }
+                    case "filterBooksByDate":{
+                        System.out.println("Filter books by date {start date, end date}");
+                        params = bufferedReader.readLine();
+                        List<String> items = Arrays.asList(params.split(","));
+                        if(items.size() != 2){
+                            System.out.println("Wrong parameters, should be {start date, end date}");
+                        }
+                        else{
+                            bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
+                                    Timestamp.valueOf(items.get(1))).forEach(System.out::println);
+                        }
+                        break;
+                    }
+                    case "filterBooksByPrice":{
+                        System.out.println("Filter books by price {min price, max price}");
+                        params = bufferedReader.readLine();
+                        List<String> items = Arrays.asList(params.split(","));
+                        if(items.size() !=2){
+                            System.out.println("Wrong parameteres, should be {min price, max price}");
+                        }
+                        else{
+                            bookService.filterBooksByPrice(Double.valueOf(items.get(0)), Double.valueOf(items.get(1)))
+                                    .forEach(System.out::println);
+                        }
+                        break;
+                    }
+                    case "filterUsersByName":{
+                        System.out.println("Filter users by name:");
+                        params = bufferedReader.readLine();
+                        userService.filterUsersByName(params).forEach(System.out::println);
                         break;
                     }
                     default:
@@ -195,6 +239,11 @@ public class Console {
         System.out.println("\tprintBooks");
         System.out.println("\tprintUsers");
         System.out.println("\tbuyBook");
+        System.out.println("\tfilterBooksByTitle");
+        System.out.println("\tfilterBooksByAuthor");
+        System.out.println("\tfilterBooksByDate");
+        System.out.println("\tfilterBooksByPrice");
+        System.out.println("\tfilterUsersByName");
     }
 
 }
