@@ -123,7 +123,7 @@ public class BookMySqlRepository implements BookRepository {
             SqlQueryBuilder builder = new SqlQueryBuilder();
             ObjectMapper<NamedEntity> namedEntityMapper = new ObjectMapper<>(NamedEntity.class);
             String query = builder
-                    .select("id", "author_name as name")
+                    .select("id","name")
                     .from("authors")
                     .join("authors_books")
                     .on(builder.eq("authors.id", "authors_books.author_id"))
