@@ -107,6 +107,7 @@ public class BookFileRepository extends BookInMemoryRepository {
     public Optional<Book> save(Book entity) throws ValidationException {
         Optional<Book> optional = super.save(entity);
         if (optional.isPresent()) {
+            writeAllToFile();
             return optional;
         }
         saveToFile(entity);
