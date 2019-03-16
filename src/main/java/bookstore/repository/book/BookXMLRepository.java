@@ -2,7 +2,7 @@ package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
 import bookstore.repository.XMLRepository;
-import bookstore.utils.builder.BookBuilder;
+import bookstore.utils.reader.BookReader;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 public class BookXMLRepository extends XMLRepository<String, Book> implements BookRepository {
     public BookXMLRepository(Validator<Book> validator, String fileName) {
-        super(validator, fileName, new BookBuilder());
+        super(validator, fileName, new BookReader());
     }
 
     /**

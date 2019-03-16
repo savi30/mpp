@@ -1,9 +1,9 @@
-package bookstore.utils.builder;
+package bookstore.utils.reader;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public interface Builder<T> {
+public interface Reader<T> {
     T get(String line);
     T get(Element node);
     void addElement(Document document, Element root, T entity);

@@ -1,4 +1,4 @@
-package bookstore.utils.builder;
+package bookstore.utils.reader;
 
 import bookstore.domain.book.Book;
 import bookstore.domain.core.NamedEntity;
@@ -12,7 +12,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class BookBuilder implements Builder<Book> {
+public class BookReader implements Reader<Book> {
     public Book get(String line){
         List<String> items = Arrays.asList(line.split(","));
 

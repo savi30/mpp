@@ -2,7 +2,7 @@ package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
 import bookstore.repository.FileRepository;
-import bookstore.utils.builder.BookBuilder;
+import bookstore.utils.reader.BookReader;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 import java.sql.Timestamp;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class BookFileRepository extends FileRepository<String, Book> implements BookRepository{
 
     public BookFileRepository(Validator<Book> validator, String fileName) {
-        super(validator, fileName, new BookBuilder());
+        super(validator, fileName, new BookReader());
     }
 
     /**

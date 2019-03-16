@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><bookstore>
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
     <book id="1">
         <title>Harry Potter</title>
         <authors>J K. Rowling</authors>
@@ -13,7 +14,18 @@
         <price>39.95</price>
         <quantity>10</quantity>
     </book>
-    
-    
-
-    <book id="3"><title>Carte2</title><authors>Me again</authors><year>2001-01-01 00:00:00.0</year><price>20.0</price><quantity>15</quantity></book><book id="21"><title>Carte</title><authors>Me</authors><year>2999-01-01 00:00:20.0</year><price>20.0</price><quantity>20</quantity></book></bookstore>
+    <book id="3">
+        <title>Carte2</title>
+        <authors>Me again</authors>
+        <year>2001-01-01 00:00:00.0</year>
+        <price>20.0</price>
+        <quantity>15</quantity>
+    </book>
+    <book id="21">
+        <title>Carte</title>
+        <authors>Me</authors>
+        <year>2999-01-01 00:00:20.0</year>
+        <price>20.0</price>
+        <quantity>20</quantity>
+    </book>
+</bookstore>

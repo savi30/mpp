@@ -1,4 +1,4 @@
-package bookstore.utils.builder;
+package bookstore.utils.reader;
 
 import bookstore.domain.user.User;
 import org.w3c.dom.Document;
@@ -9,7 +9,7 @@ import org.w3c.dom.NodeList;
 import java.util.Arrays;
 import java.util.List;
 
-public class UserBuilder implements Builder<User> {
+public class UserReader implements Reader<User> {
     public User get(String line){
         List<String> items = Arrays.asList(line.split(","));
 

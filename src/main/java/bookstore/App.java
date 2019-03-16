@@ -1,36 +1,32 @@
 package bookstore;
 
 import bookstore.domain.book.Book;
+import bookstore.domain.logs.LogsEntry;
 import bookstore.domain.user.User;
 import bookstore.repository.Repository;
-import bookstore.repository.book.BookFileRepository;
-import bookstore.repository.book.BookMySqlRepository;
-import bookstore.repository.book.BookRepository;
-import bookstore.repository.book.BookXMLRepository;
-import bookstore.repository.user.UserFileRepository;
-import bookstore.repository.user.UserRepository;
-import bookstore.repository.user.UserXMLRepository;
 import bookstore.service.book.BookService;
+import bookstore.service.logs.LogsService;
+import bookstore.service.report.ReportService;
 import bookstore.service.user.UserService;
 import bookstore.ui.Console;
-import bookstore.utils.validator.Validator;
-import bookstore.utils.validator.book.BookValidator;
-import bookstore.utils.validator.user.UserValidator;
+import bookstore.utils.RepositoryFactory;
 
 /**
  * @author pollos_hermanos.
  */
 public class App {
     public static void main(String[] args) {
-        Validator<Book> bookValidator = new BookValidator();
-        Validator<User> userValidator = new UserValidator();
-        BookRepository bookRepository = new BookXMLRepository(bookValidator, "./data/BooksXML.xml");
-        UserRepository userRepository = new UserXMLRepository(userValidator, "./data/UsersXML.xml");
+        RepositoryFactory repositoryFactory = new RepositoryFactory();
+        Repository bookRepository = repositoryFactory.getXMLRepository(Book.class, "Data/BooksXML.xml");
+        Repository userRepository = repositoryFactory.getXMLRepository(User.class, "Data/UsersXML.xml");
+        Repository logsRepository = repositoryFactory.getXMLRepository(LogsEntry.class, "Data/LogsXML.xml");
 
         BookService bookService = new BookService(bookRepository);
         UserService userService = new UserService(userRepository);
-        bookService.findAll().forEach(System.out::println);
-        userService.findAll().forEach(System.out::println);
+        LogsService logsService = new LogsService(logsRepository);
+        ReportService reportService = new ReportService(bookService, userService, logsService);
+        logsService.findAll().forEach(System.out::println);
+        System.out.println(reportService.getCustomerWhoSpentMost().toString());
         Console console = new Console(bookService, userService);
         console.runConsole();
     }

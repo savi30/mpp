@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bookstore>
+    <logEntry id="1">
+        <clientId>1</clientId>
+        <bookId>1</bookId>
+        <transactionDate>2018-11-01</transactionDate>
+    </logEntry>
+    <logEntry id="2">
+        <clientId>1</clientId>
+        <bookId>2</bookId>
+        <transactionDate>2019-02-12</transactionDate>
+    </logEntry>
+    <logEntry id="3">
+        <clientId>2</clientId>
+        <bookId>1</bookId>
+        <transactionDate>2018-11-03</transactionDate>
+    </logEntry>
+    <logEntry id="4">
+        <clientId>3</clientId>
+        <bookId>3</bookId>
+        <transactionDate>2018-07-20</transactionDate>
+    </logEntry>
+    <logEntry id="5">
+        <clientId>3</clientId>
+        <bookId>1</bookId>
+        <transactionDate>2018-03-21</transactionDate>
+    </logEntry>
+    <logEntry id="6">
+        <clientId>3</clientId>
+        <bookId>1</bookId>
+        <transactionDate>2019-01-21</transactionDate>
+    </logEntry>
+    <logEntry id="7">
+        <clientId>3</clientId>
+        <bookId>21</bookId>
+        <transactionDate>2019-02-21</transactionDate>
+    </logEntry>
+</bookstore>

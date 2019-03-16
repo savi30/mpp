@@ -1,7 +1,7 @@
 package bookstore.repository;
 
 import bookstore.domain.core.Entity;
-import bookstore.utils.builder.Builder;
+import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
@@ -15,11 +15,11 @@ import java.util.Optional;
 
 public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
     private String fileName;
-    private Builder<T> builder;
-    public FileRepository(Validator<T> validator, String fileName, Builder<T> builder) {
+    private Reader<T> reader;
+    public FileRepository(Validator<T> validator, String fileName, Reader<T> reader) {
         super(validator);
         this.fileName = fileName;
-        this.builder = builder;
+        this.reader = reader;
         loadData();
     }
 
@@ -31,7 +31,7 @@ public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository
         try {
             Files.lines(path).forEach(line -> {
                 try {
-                    super.save(builder.get(line));
+                    super.save(reader.get(line));
                 } catch (ValidationException ve) {
                     ve.printStackTrace();
                 }
