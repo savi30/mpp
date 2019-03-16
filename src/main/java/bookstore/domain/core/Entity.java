@@ -1,9 +1,5 @@
 package bookstore.domain.core;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Stream;
-
 /**
  * Class for a generic Entity with an ID.
  * @author pollos_hermanos.

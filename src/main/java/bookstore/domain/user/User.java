@@ -2,9 +2,6 @@ package bookstore.domain.user;
 
 import bookstore.domain.core.NamedEntity;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * @author pollos_hermanos.
  */

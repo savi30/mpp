@@ -1,8 +1,5 @@
 package bookstore.domain.core;
 
-import java.util.Arrays;
-import java.util.List;
-
 /**
  * Generic class for an Entity with an ID and a name.
  *
