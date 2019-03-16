@@ -28,5 +28,4 @@ public class NamedEntity<ID> extends Entity<ID> {
     public String toString() {
         return this.getId() + " " + this.getName();
     }
-
 }
