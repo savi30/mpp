@@ -3,7 +3,9 @@ package bookstore;
 import bookstore.domain.book.Book;
 import bookstore.domain.user.User;
 import bookstore.repository.Repository;
+import bookstore.repository.book.BookFileRepository;
 import bookstore.repository.book.BookMySqlRepository;
+import bookstore.repository.book.BookRepository;
 import bookstore.repository.user.UserFileRepository;
 import bookstore.service.book.BookService;
 import bookstore.service.user.UserService;
@@ -19,12 +21,12 @@ public class App {
     public static void main(String[] args) {
         Validator<Book> bookValidator = new BookValidator();
         Validator<User> userValidator = new UserValidator();
-        Repository<String, Book> bookRepository = new BookMySqlRepository(bookValidator);
+        BookRepository bookRepository = new BookFileRepository(bookValidator, "./data/Books");
         Repository<String, User> userRepository = new UserFileRepository(userValidator, "./data/Users");
 
         BookService bookService = new BookService(bookRepository);
         UserService userService = new UserService(userRepository);
-        bookService.findAll().forEach(System.out::println);
+        bookService.filterBooksByAuthor("author").forEach(System.out::println);
         Console console = new Console(bookService, userService);
         console.runConsole();
     }

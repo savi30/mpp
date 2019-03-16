@@ -31,4 +31,9 @@ public class Entity<ID> {
                 "id=" + id +
                 '}';
     }
+
+    public String toFileString(){
+        return this.getId() + "\n";
+    }
+
 }

@@ -1,5 +1,8 @@
 package bookstore.domain.core;
 
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Generic class for an Entity with an ID and a name.
  *
@@ -28,4 +31,5 @@ public class NamedEntity<ID> extends Entity<ID> {
     public String toString() {
         return this.getId() + " " + this.getName();
     }
+
 }

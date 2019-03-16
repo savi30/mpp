@@ -4,6 +4,7 @@ import bookstore.domain.core.NamedEntity;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -78,4 +79,11 @@ public class Book extends NamedEntity<String> {
     public void setAuthors(List<NamedEntity> authors) {
         this.authors = authors;
     }
+
+    @Override
+    public String toFileString(){
+        return this.getId() + "," + this.getTitle() + "," + this.getAuthorsString() + ","
+                + this.getPublishYear() + "," + this.getPrice() + "," + this.getQuantity() + "\n";
+    }
+
 }

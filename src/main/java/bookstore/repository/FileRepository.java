@@ -1,0 +1,119 @@
+package bookstore.repository;
+
+import bookstore.domain.book.Book;
+import bookstore.domain.core.Entity;
+import bookstore.utils.builder.Builder;
+import bookstore.utils.validator.Validator;
+import bookstore.utils.validator.exception.ValidationException;
+
+import java.io.BufferedWriter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardOpenOption;
+import java.util.Optional;
+
+public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
+    private String fileName;
+    private Builder<T> builder;
+    public FileRepository(Validator<T> validator, String fileName, Builder<T> builder) {
+        super(validator);
+        this.fileName = fileName;
+        this.builder = builder;
+        loadData();
+    }
+
+    /**
+     * Load all entities from the file into memory.
+     */
+    private void loadData() {
+        Path path = Paths.get(fileName);
+        try {
+            Files.lines(path).forEach(line -> {
+                try {
+                    super.save(builder.get(line));
+                } catch (ValidationException ve) {
+                    ve.printStackTrace();
+                }
+            });
+
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+    }
+
+    /**
+     * Write entity to file.
+     */
+    private void saveToFile(T entity) {
+        Path path = Paths.get(fileName);
+
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
+            bufferedWriter.write(entity.toFileString());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Add a entity and write changes to file.
+     * @return an {@code Optional} encapsulating the added entity.
+     */
+    @Override
+    public Optional<T> save(T entity) throws ValidationException {
+        Optional<T> optional = super.save(entity);
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        saveToFile(entity);
+        return Optional.empty();
+    }
+
+    /**
+     * Delete a entity and write changes to file.
+     * @return an {@code Optional} encapsulating the deleted entity or empty if there is no such entity.
+     */
+    @Override
+    public Optional<T> delete(ID id){
+        Optional<T> optional = super.delete(id);
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Update a entity and write changes to file.
+     * @return an {@code Optional} encapsulating the updated entity or empty if there is no such entity.
+     */
+    @Override
+    public Optional<T> update(T entity)throws ValidationException {
+        Optional<T> optional = super.update(entity);
+        if (optional.isPresent()) {
+            writeAllToFile();
+            return optional;
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * Write all to file.
+     */
+    protected void writeAllToFile(){
+        Path path = Paths.get(fileName);
+        try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.TRUNCATE_EXISTING)) {
+            entities.values().forEach(entity -> {try{
+                bufferedWriter.write(entity.toFileString());
+            }catch (IOException e){
+                e.printStackTrace();
+            }});
+        }catch (IOException e){
+            e.printStackTrace();
+        }
+    }
+
+}
+
