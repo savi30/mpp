@@ -5,12 +5,16 @@ import bookstore.repository.InMemoryRepository;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
+import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 /**
  * @author pollos_hermanos.
  */
-public class BookInMemoryRepository extends InMemoryRepository<String, Book> {
+public class BookInMemoryRepository extends InMemoryRepository<String, Book> implements BookRepository  {
     public BookInMemoryRepository(Validator<Book> validator) {
         super(validator);
     }
@@ -41,5 +45,36 @@ public class BookInMemoryRepository extends InMemoryRepository<String, Book> {
             entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
         }
         return optional;
+    }
+
+    @Override
+    public Collection<Book> findByAuthor(String author){
+        return entities.values().stream()
+                .filter(book -> book.getAuthorsString().contains(author)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<Book> findByTitle(String title){
+        return entities.values().stream()
+                .filter(book -> book.getTitle().contains(title)).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<Book> findByDate(Timestamp t1, Timestamp t2) {
+        return  entities.values().stream()
+                .filter(book -> t1.before(book.getPublishYear()) && t2.after(book.getPublishYear()))
+                .collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<Book> findByPrice(Double p1, Double p2) {
+        return entities.values().stream()
+                .filter(book -> p1 <= book.getPrice() && book.getPrice() <= p2).collect(Collectors.toSet());
+    }
+
+    @Override
+    public Collection<Book> findByQuantity(Integer quantity) {
+        return entities.values().stream()
+                .filter(book -> book.getQuantity().equals(quantity)).collect(Collectors.toSet());
     }
 }

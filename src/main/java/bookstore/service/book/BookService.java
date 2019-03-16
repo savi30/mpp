@@ -2,9 +2,11 @@ package bookstore.service.book;
 
 import bookstore.domain.book.Book;
 import bookstore.repository.Repository;
+import bookstore.repository.book.BookRepository;
 import bookstore.service.AbstractCRUDService;
 
 import java.sql.Timestamp;
+import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -14,7 +16,8 @@ import java.util.stream.StreamSupport;
  * @author pollos_hermanos.
  */
 public class BookService extends AbstractCRUDService<String, Book> {
-    public BookService(Repository<String, Book> repository) {
+    private BookRepository repository;
+    public BookService(BookRepository repository) {
         this.repository = repository;
     }
 
@@ -34,10 +37,8 @@ public class BookService extends AbstractCRUDService<String, Book> {
      *
      * @return a set with the filtered books.
      */
-    public Set<Book> filterBooksByTitle(String s) {
-        Iterable<Book> books = repository.findAll();
-        return StreamSupport.stream(books.spliterator(), false)
-                .filter(book -> book.getTitle().contains(s)).collect(Collectors.toSet());
+    public Collection<Book> filterBooksByTitle(String s) {
+        return repository.findByTitle(s);
 
     }
 
@@ -46,10 +47,8 @@ public class BookService extends AbstractCRUDService<String, Book> {
      *
      * @return a set with the filtered books.
      */
-    public Set<Book> filterBooksByAuthor(String s) {
-        Iterable<Book> books = repository.findAll();
-        return StreamSupport.stream(books.spliterator(), false)
-                .filter(book -> book.getAuthorsString().contains(s)).collect(Collectors.toSet());
+    public Collection<Book> filterBooksByAuthor(String s) {
+        return repository.findByAuthor(s);
 
     }
 
@@ -58,11 +57,8 @@ public class BookService extends AbstractCRUDService<String, Book> {
      *
      * @return a set with the filtered books.
      */
-    public Set<Book> filterBooksByDate(Timestamp t1, Timestamp t2) {
-        Iterable<Book> books = repository.findAll();
-        return StreamSupport.stream(books.spliterator(), false)
-                .filter(book -> t1.before(book.getPublishYear()) && t2.after(book.getPublishYear()))
-                .collect(Collectors.toSet());
+    public Collection<Book> filterBooksByDate(Timestamp t1, Timestamp t2) {
+        return repository.findByDate(t1, t2);
     }
 
     /**
@@ -70,15 +66,11 @@ public class BookService extends AbstractCRUDService<String, Book> {
      *
      * @return a set with the filtered books.
      */
-    public Set<Book> filterBooksByPrice(Double p1, Double p2) {
-        Iterable<Book> books = repository.findAll();
-        return StreamSupport.stream(books.spliterator(), false)
-                .filter(book -> p1 <= book.getPrice() && book.getPrice() <= p2).collect(Collectors.toSet());
+    public Collection<Book> filterBooksByPrice(Double p1, Double p2) {
+        return repository.findByPrice(p1, p2);
     }
 
-    public Set<Book> filterBooksByQuantity(Integer quantity) {
-        Iterable<Book> books = repository.findAll();
-        return StreamSupport.stream(books.spliterator(), false)
-                .filter(book -> book.getQuantity() == quantity).collect(Collectors.toSet());
+    public Collection<Book> filterBooksByQuantity(Integer quantity) {
+        return repository.findByQuantity(quantity);
     }
 }

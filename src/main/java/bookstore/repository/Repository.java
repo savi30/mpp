@@ -60,6 +60,4 @@ public interface Repository<ID, T extends Entity<ID>> {
      */
     Optional<T> delete(ID id);
 
-
-    Optional<T> buy(ID bookId, ID clientId);
 }
