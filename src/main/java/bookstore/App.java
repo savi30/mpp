@@ -7,6 +7,7 @@ import bookstore.repository.book.BookFileRepository;
 import bookstore.repository.book.BookMySqlRepository;
 import bookstore.repository.book.BookRepository;
 import bookstore.repository.user.UserFileRepository;
+import bookstore.repository.user.UserRepository;
 import bookstore.service.book.BookService;
 import bookstore.service.user.UserService;
 import bookstore.ui.Console;
@@ -22,11 +23,12 @@ public class App {
         Validator<Book> bookValidator = new BookValidator();
         Validator<User> userValidator = new UserValidator();
         BookRepository bookRepository = new BookFileRepository(bookValidator, "./data/Books");
-        Repository<String, User> userRepository = new UserFileRepository(userValidator, "./data/Users");
+        UserRepository userRepository = new UserFileRepository(userValidator, "./data/Users");
 
         BookService bookService = new BookService(bookRepository);
         UserService userService = new UserService(userRepository);
         bookService.filterBooksByAuthor("author").forEach(System.out::println);
+        userService.filterUsersByName("User").forEach(System.out::println);
         Console console = new Console(bookService, userService);
         console.runConsole();
     }
