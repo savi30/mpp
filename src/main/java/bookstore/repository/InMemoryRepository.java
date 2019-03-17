@@ -50,11 +50,6 @@ public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<
     }
 
     @Override
-    public Optional<T> buy(ID bookId, ID clientId) {
-        return Optional.empty();
-    }
-
-    @Override
     public Optional<T> update(T entity) throws ValidationException {
         if (entity == null) {
             throw new IllegalArgumentException("entity must not be null");

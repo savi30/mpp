@@ -14,4 +14,10 @@ public class User extends NamedEntity<String> {
     public String toString(){
         return super.getId().toString() + ". " + super.getName();
     }
+
+    @Override
+    public String toFileString(){
+        return super.getId().toString() + "," + super.getName() + "\n";
+    }
+
 }

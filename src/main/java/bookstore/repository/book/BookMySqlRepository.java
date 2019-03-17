@@ -8,10 +8,7 @@ import bookstore.utils.mapper.ObjectMapper;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -72,6 +69,31 @@ public class BookMySqlRepository implements BookRepository {
     }
 
     @Override
+    public Collection<Book> findByAuthor(String author){
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByTitle(String author){
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByDate(Timestamp t1, Timestamp t2){
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByPrice(Double p1, Double p2){
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByQuantity(Integer quantity){
+        return null;
+    }
+
+    @Override
     public Optional<Book> update(Book entity) throws ValidationException {
         return Optional.empty();
     }
@@ -123,7 +145,7 @@ public class BookMySqlRepository implements BookRepository {
             SqlQueryBuilder builder = new SqlQueryBuilder();
             ObjectMapper<NamedEntity> namedEntityMapper = new ObjectMapper<>(NamedEntity.class);
             String query = builder
-                    .select("id", "author_name as name")
+                    .select("id","name")
                     .from("authors")
                     .join("authors_books")
                     .on(builder.eq("authors.id", "authors_books.author_id"))
