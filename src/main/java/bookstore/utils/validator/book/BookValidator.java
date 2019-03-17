@@ -20,7 +20,7 @@ public class BookValidator implements Validator<Book> {
         if(entity.getAuthorsString().isEmpty()){
             errors += "Book must at least one author!\n";
         }
-        else if(!entity.getAuthorsString().matches("[a-zA-Z0-9 ]*"))
+        else if(!entity.getAuthorsString().matches("[a-zA-Z0-9.; ]*"))
             errors += "Author names must contain only letters, numbers, and spaces!\n";
         if(entity.getPrice() < 0)
             errors += "Price can't be negative!\n";

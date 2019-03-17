@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?><bookstore>
+    <user id="1">
+        <name>Harry Potter</name>
+    </user>
+    <user id="2">
+        <name>Santa</name>
+    </user>
+</bookstore>
