@@ -1,21 +1,18 @@
 package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
-import bookstore.repository.FileRepository;
+import bookstore.repository.XMLRepository;
 import bookstore.utils.builder.BookBuilder;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
+
 import java.sql.Timestamp;
 import java.util.Collection;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-/**
- * @author pollos_hermanos.
- */
-public class BookFileRepository extends FileRepository<String, Book> implements BookRepository{
-
-    public BookFileRepository(Validator<Book> validator, String fileName) {
+public class BookXMLRepository extends XMLRepository<String, Book> implements BookRepository {
+    public BookXMLRepository(Validator<Book> validator, String fileName) {
         super(validator, fileName, new BookBuilder());
     }
 
@@ -30,14 +27,14 @@ public class BookFileRepository extends FileRepository<String, Book> implements 
         Optional<Book> optional = findById(bookId);
         if(optional.isPresent() && entities.get(bookId).getQuantity()>0){
             entities.get(bookId).setQuantity(entities.get(bookId).getQuantity()-1);
-            writeAllToFile();
+            updateXML(optional.get());
             return optional;
         }
         return Optional.empty();
     }
 
     @Override
-    public Optional<Book> save(Book entity) throws ValidationException{
+    public Optional<Book> save(Book entity) throws ValidationException {
         if (entity == null) {
             throw new IllegalArgumentException("entity must not be null");
         }
@@ -45,10 +42,10 @@ public class BookFileRepository extends FileRepository<String, Book> implements 
         Optional<Book> optional = Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
         if( optional.isPresent()){
             entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
-            writeAllToFile();
+            updateXML(entities.get(entity.getId()));
         }
         else{
-            saveToFile(entity);
+            saveToXML(entity);
         }
         return optional;
     }
@@ -83,4 +80,5 @@ public class BookFileRepository extends FileRepository<String, Book> implements 
         return entities.values().stream()
                 .filter(book -> book.getQuantity().equals(quantity)).collect(Collectors.toSet());
     }
+
 }

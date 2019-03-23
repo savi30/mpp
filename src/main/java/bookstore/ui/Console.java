@@ -230,7 +230,7 @@ public class Console {
 
     private Book parseBook(List<String> items) throws IllegalArgumentException {
         Book book = new Book(items.get(0), items.get(1));
-        List<String> authors = Arrays.asList(items.get(2).split(" "));
+        List<String> authors = Arrays.asList(items.get(2).split(";"));
         book.setAuthors(authors.stream().map(a -> new NamedEntity(1, a))
                 .collect(Collectors.toList()));
         Timestamp date = Timestamp.valueOf(items.get(3));

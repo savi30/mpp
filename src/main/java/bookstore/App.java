@@ -6,8 +6,10 @@ import bookstore.repository.Repository;
 import bookstore.repository.book.BookFileRepository;
 import bookstore.repository.book.BookMySqlRepository;
 import bookstore.repository.book.BookRepository;
+import bookstore.repository.book.BookXMLRepository;
 import bookstore.repository.user.UserFileRepository;
 import bookstore.repository.user.UserRepository;
+import bookstore.repository.user.UserXMLRepository;
 import bookstore.service.book.BookService;
 import bookstore.service.user.UserService;
 import bookstore.ui.Console;
@@ -22,13 +24,13 @@ public class App {
     public static void main(String[] args) {
         Validator<Book> bookValidator = new BookValidator();
         Validator<User> userValidator = new UserValidator();
-        BookRepository bookRepository = new BookFileRepository(bookValidator, "./data/Books");
-        UserRepository userRepository = new UserFileRepository(userValidator, "./data/Users");
+        BookRepository bookRepository = new BookXMLRepository(bookValidator, "./data/BooksXML.xml");
+        UserRepository userRepository = new UserXMLRepository(userValidator, "./data/UsersXML.xml");
 
         BookService bookService = new BookService(bookRepository);
         UserService userService = new UserService(userRepository);
-        bookService.filterBooksByAuthor("author").forEach(System.out::println);
-        userService.filterUsersByName("User").forEach(System.out::println);
+        bookService.findAll().forEach(System.out::println);
+        userService.findAll().forEach(System.out::println);
         Console console = new Console(bookService, userService);
         console.runConsole();
     }

@@ -72,7 +72,7 @@ public class Book extends NamedEntity<String> {
 
     public String getAuthorsString(){
         return authors.stream().map(author -> author.getName())
-                .collect(Collectors.joining(" "));
+                .collect(Collectors.joining(";"));
     }
 
     public void setAuthors(List<NamedEntity> authors) {

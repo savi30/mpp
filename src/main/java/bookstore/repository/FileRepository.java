@@ -1,6 +1,5 @@
 package bookstore.repository;
 
-import bookstore.domain.book.Book;
 import bookstore.domain.core.Entity;
 import bookstore.utils.builder.Builder;
 import bookstore.utils.validator.Validator;
@@ -46,7 +45,7 @@ public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository
     /**
      * Write entity to file.
      */
-    private void saveToFile(T entity) {
+    protected void saveToFile(T entity) {
         Path path = Paths.get(fileName);
 
         try (BufferedWriter bufferedWriter = Files.newBufferedWriter(path, StandardOpenOption.APPEND)) {
