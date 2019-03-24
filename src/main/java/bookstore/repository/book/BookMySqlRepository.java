@@ -2,6 +2,7 @@ package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
 import bookstore.domain.core.NamedEntity;
+import bookstore.repository.DBRepository;
 import bookstore.repository.config.MySqlDatabaseConnector;
 import bookstore.utils.builder.SqlQueryBuilder;
 import bookstore.utils.mapper.ObjectMapper;
@@ -14,13 +15,13 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-public class BookMySqlRepository implements BookRepository {
+public class BookMySqlRepository extends DBRepository<String, Book> implements BookRepository {
     private static final String BOOKS_TABLE = "books";
-    private Validator validator;
+
     private ObjectMapper<Book> objectMapper;
 
-    public BookMySqlRepository(Validator validator) {
-        this.validator = validator;
+    public BookMySqlRepository(Validator<Book> validator) {
+        super(validator);
         this.objectMapper = new ObjectMapper<>(Book.class);
     }
 
@@ -34,7 +35,8 @@ public class BookMySqlRepository implements BookRepository {
             ResultSet result = statement.executeQuery(query);
             optional = objectMapper.map(result);
             this.getAuthors(optional.get());
-
+            statement.close();
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -62,45 +64,11 @@ public class BookMySqlRepository implements BookRepository {
                 optional.ifPresent(list::add);
             }
             list.forEach(this::getAuthors);
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return list;
-    }
-
-    @Override
-    public Collection<Book> findByAuthor(String author){
-        return null;
-    }
-
-    @Override
-    public Collection<Book> findByTitle(String author){
-        return null;
-    }
-
-    @Override
-    public Collection<Book> findByDate(Timestamp t1, Timestamp t2){
-        return null;
-    }
-
-    @Override
-    public Collection<Book> findByPrice(Double p1, Double p2){
-        return null;
-    }
-
-    @Override
-    public Collection<Book> findByQuantity(Integer quantity){
-        return null;
-    }
-
-    @Override
-    public Optional<Book> update(Book entity) throws ValidationException {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Book> save(Book entity) throws ValidationException {
-        return Optional.empty();
     }
 
     @Override
@@ -114,6 +82,7 @@ public class BookMySqlRepository implements BookRepository {
                     .where(builder.eq("id", id))
                     .build();
             statement.executeUpdate(query);
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -132,10 +101,46 @@ public class BookMySqlRepository implements BookRepository {
                     .build();
             statement.executeUpdate(query);
             this.updateLogs(bookId, clientId);
+            statement.close();
             return this.findById(bookId);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        return Optional.empty();
+    }
+
+    @Override
+    public Collection<Book> findByAuthor(String author) {
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByTitle(String author) {
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByDate(Timestamp t1, Timestamp t2) {
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByPrice(Double p1, Double p2) {
+        return null;
+    }
+
+    @Override
+    public Collection<Book> findByQuantity(Integer quantity) {
+        return null;
+    }
+
+    @Override
+    public Optional<Book> update(Book entity) throws ValidationException {
+        return Optional.empty();
+    }
+
+    @Override
+    public Optional<Book> save(Book entity) throws ValidationException {
         return Optional.empty();
     }
 
@@ -145,7 +150,7 @@ public class BookMySqlRepository implements BookRepository {
             SqlQueryBuilder builder = new SqlQueryBuilder();
             ObjectMapper<NamedEntity> namedEntityMapper = new ObjectMapper<>(NamedEntity.class);
             String query = builder
-                    .select("id","name")
+                    .select("id", "name")
                     .from("authors")
                     .join("authors_books")
                     .on(builder.eq("authors.id", "authors_books.author_id"))
@@ -156,6 +161,7 @@ public class BookMySqlRepository implements BookRepository {
                 Optional<NamedEntity> optional = namedEntityMapper.map(result);
                 optional.ifPresent(book.getAuthors()::add);
             }
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -171,8 +177,10 @@ public class BookMySqlRepository implements BookRepository {
                     .values(clientId, bookId)
                     .build();
             statement.executeUpdate(query);
+            statement.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
     }
 }
+

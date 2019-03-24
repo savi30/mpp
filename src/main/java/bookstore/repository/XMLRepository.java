@@ -1,7 +1,7 @@
 package bookstore.repository;
 
 import bookstore.domain.core.Entity;
-import bookstore.utils.builder.Builder;
+import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 import org.w3c.dom.Document;
@@ -22,12 +22,12 @@ import java.util.Optional;
 
 public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
     private String fileName;
-    protected Builder<T> builder;
+    protected Reader<T> reader;
 
-    public XMLRepository(Validator<T> validator, String fileName, Builder<T> builder) {
+    public XMLRepository(Validator<T> validator, String fileName, Reader<T> reader) {
         super(validator);
         this.fileName = fileName;
-        this.builder = builder;
+        this.reader = reader;
         loadData();
     }
 
@@ -47,7 +47,7 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
             for (int i = 0; i < len; i++) {
                 Node node = nodes.item(i);
                 if (node instanceof Element) {
-                    T b = builder.get((Element) node);
+                    T b = reader.get((Element) node);
                     super.save(b);
                 }
             }
@@ -106,13 +106,13 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
                     .parse(fileName);
             ID id = entity.getId();
             Element root = document.getDocumentElement();
-            NodeList elements = root.getElementsByTagName(builder.getTag());
+            NodeList elements = root.getElementsByTagName(reader.getTag());
             int len = elements.getLength();
             for (int i = 0; i < len; i++) {
                 Node element = elements.item(i);
                 if (element instanceof Element && ((Element) element).getAttribute("id").equals(id)) {
                     element.getParentNode().removeChild(element);
-                    builder.addElement(document, root, entity);
+                    reader.addElement(document, root, entity);
                     break;
                 }
             }
@@ -136,7 +136,7 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
                     .newDocumentBuilder()
                     .parse(fileName);
             Element root = document.getDocumentElement();
-            NodeList elements = root.getElementsByTagName(builder.getTag());
+            NodeList elements = root.getElementsByTagName(reader.getTag());
             int len = elements.getLength();
             for (int i = 0; i < len; i++) {
                 Node element = elements.item(i);
@@ -165,7 +165,7 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
                     .parse(fileName);
             Element root = document.getDocumentElement();
 
-            builder.addElement(document, root, entity);
+            reader.addElement(document, root, entity);
 
             Transformer transformer =
                     TransformerFactory.newInstance().newTransformer();

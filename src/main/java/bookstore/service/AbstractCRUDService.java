@@ -38,4 +38,12 @@ public class AbstractCRUDService<ID, T extends Entity<ID>> {
         Optional<T> entity = repository.delete(id);
         return entity.get();
     }
+
+    public Repository<ID, T> getRepository() {
+        return repository;
+    }
+
+    public void setRepository(Repository<ID, T> repository) {
+        this.repository = repository;
+    }
 }

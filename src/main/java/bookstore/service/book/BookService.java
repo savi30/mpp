@@ -1,6 +1,7 @@
 package bookstore.service.book;
 
 import bookstore.domain.book.Book;
+import bookstore.repository.Repository;
 import bookstore.repository.book.BookRepository;
 import bookstore.service.AbstractCRUDService;
 
@@ -13,7 +14,8 @@ import java.util.Optional;
  * @author pollos_hermanos.
  */
 public class BookService extends AbstractCRUDService<String, Book> {
-    public BookService(BookRepository repository) {
+
+    public BookService(Repository<String, Book> repository) {
         this.repository = repository;
     }
 
@@ -25,7 +27,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
      */
     public Optional<Book> buy(String bookId, String clientId) {
-        return ((BookRepository)repository).buy(bookId, clientId);
+        return ((BookRepository) repository).buy(bookId, clientId);
     }
 
     /**
@@ -34,7 +36,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByTitle(String s) {
-        return ((BookRepository)repository).findByTitle(s);
+        return ((BookRepository) repository).findByTitle(s);
 
     }
 
@@ -44,7 +46,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByAuthor(String s) {
-        return ((BookRepository)repository).findByAuthor(s);
+        return ((BookRepository) repository).findByAuthor(s);
 
     }
 
@@ -54,7 +56,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByDate(Timestamp t1, Timestamp t2) {
-        return ((BookRepository)repository).findByDate(t1, t2);
+        return ((BookRepository) repository).findByDate(t1, t2);
     }
 
     /**
@@ -63,10 +65,10 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByPrice(Double p1, Double p2) {
-        return ((BookRepository)repository).findByPrice(p1, p2);
+        return ((BookRepository) repository).findByPrice(p1, p2);
     }
 
     public Collection<Book> filterBooksByQuantity(Integer quantity) {
-        return ((BookRepository)repository).findByQuantity(quantity);
+        return ((BookRepository) repository).findByQuantity(quantity);
     }
 }
