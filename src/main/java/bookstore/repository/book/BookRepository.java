@@ -1,7 +1,6 @@
 package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
-import bookstore.repository.Repository;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -10,7 +9,7 @@ import java.util.Optional;
 /**
  * @author pollos_hermanos.
  */
-public interface BookRepository extends Repository<String, Book> {
+public interface BookRepository {
 
     Optional<Book> buy(String bookId, String clientId);
     Collection<Book> findByAuthor(String author);
