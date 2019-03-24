@@ -70,7 +70,7 @@ public class Book extends NamedEntity<String> {
         return authors;
     }
 
-    public String getAuthorsString(){
+    public String getAuthorsString() {
         return authors.stream().map(author -> author.getName())
                 .collect(Collectors.joining(";"));
     }
@@ -80,7 +80,7 @@ public class Book extends NamedEntity<String> {
     }
 
     @Override
-    public String toFileString(){
+    public String toFileString() {
         return this.getId() + "," + this.getTitle() + "," + this.getAuthorsString() + ","
                 + this.getPublishYear() + "," + this.getPrice() + "," + this.getQuantity() + "\n";
     }

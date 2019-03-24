@@ -17,7 +17,7 @@ import bookstore.utils.RepositoryFactory;
 public class App {
     public static void main(String[] args) {
         RepositoryFactory repositoryFactory = new RepositoryFactory();
-        Repository bookRepository = repositoryFactory.getXMLRepository(Book.class, "Data/BooksXML.xml");
+        Repository bookRepository = repositoryFactory.getDBRepository(Book.class);
         Repository userRepository = repositoryFactory.getXMLRepository(User.class, "Data/UsersXML.xml");
         Repository logsRepository = repositoryFactory.getXMLRepository(LogsEntry.class, "Data/LogsXML.xml");
 
@@ -25,8 +25,7 @@ public class App {
         UserService userService = new UserService(userRepository);
         LogsService logsService = new LogsService(logsRepository);
         ReportService reportService = new ReportService(bookService, userService, logsService);
-        logsService.findAll().forEach(System.out::println);
-        System.out.println(reportService.getCustomerWhoSpentMost().toString());
+        bookService.findAll().forEach(System.out::println);
         Console console = new Console(bookService, userService);
         console.runConsole();
     }

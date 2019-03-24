@@ -2,7 +2,7 @@ package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
 import bookstore.repository.XMLRepository;
-import bookstore.utils.reader.BookReader;
+import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
@@ -12,21 +12,22 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class BookXMLRepository extends XMLRepository<String, Book> implements BookRepository {
-    public BookXMLRepository(Validator<Book> validator, String fileName) {
-        super(validator, fileName, new BookReader());
+    public BookXMLRepository(Validator<Book> validator, String fileName, Reader<Book> reader) {
+        super(validator, fileName, reader);
     }
 
     /**
      * Buy a book and write changes to file.
-     * @param bookId - id of the bought book
+     *
+     * @param bookId   - id of the bought book
      * @param clientId - id of the client who buys
      * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
      */
     @Override
-    public Optional<Book> buy(String bookId, String clientId){
+    public Optional<Book> buy(String bookId, String clientId) {
         Optional<Book> optional = findById(bookId);
-        if(optional.isPresent() && entities.get(bookId).getQuantity()>0){
-            entities.get(bookId).setQuantity(entities.get(bookId).getQuantity()-1);
+        if (optional.isPresent() && entities.get(bookId).getQuantity() > 0) {
+            entities.get(bookId).setQuantity(entities.get(bookId).getQuantity() - 1);
             updateXML(optional.get());
             return optional;
         }
@@ -40,31 +41,30 @@ public class BookXMLRepository extends XMLRepository<String, Book> implements Bo
         }
         validator.validate(entity);
         Optional<Book> optional = Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
-        if( optional.isPresent()){
+        if (optional.isPresent()) {
             entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
             updateXML(entities.get(entity.getId()));
-        }
-        else{
+        } else {
             saveToXML(entity);
         }
         return optional;
     }
 
     @Override
-    public Collection<Book> findByAuthor(String author){
+    public Collection<Book> findByAuthor(String author) {
         return entities.values().stream()
                 .filter(book -> book.getAuthorsString().contains(author)).collect(Collectors.toSet());
     }
 
     @Override
-    public Collection<Book> findByTitle(String title){
+    public Collection<Book> findByTitle(String title) {
         return entities.values().stream()
                 .filter(book -> book.getTitle().contains(title)).collect(Collectors.toSet());
     }
 
     @Override
     public Collection<Book> findByDate(Timestamp t1, Timestamp t2) {
-        return  entities.values().stream()
+        return entities.values().stream()
                 .filter(book -> t1.before(book.getPublishYear()) && t2.after(book.getPublishYear()))
                 .collect(Collectors.toSet());
     }
