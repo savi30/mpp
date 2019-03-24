@@ -10,6 +10,10 @@ public class User extends NamedEntity<String> {
         super(id, name);
     }
 
+    public User(){
+
+    }
+
     @Override
     public String toString(){
         return super.getId().toString() + ". " + super.getName();

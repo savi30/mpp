@@ -11,10 +11,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -55,7 +52,6 @@ public class Console {
                             User user = new User(items.get(0), items.get(1));
                             try {
                                 userService.save(user);
-                                System.out.println(user + " was added successfully");
                             } catch (ValidationException e) {
                                 e.printStackTrace();
                             }
@@ -83,7 +79,6 @@ public class Console {
                             User user = new User(items.get(0), items.get(1));
                             try {
                                 userService.update(user);
-                                System.out.println(user + " was updated successfully");
                             } catch (ValidationException | NoSuchElementException e) {
                                 e.printStackTrace();
                             }
@@ -101,7 +96,6 @@ public class Console {
                             try {
                                 Book book = parseBook(items);
                                 bookService.save(book);
-                                System.out.println("Book was added successfully!");
                             } catch (ValidationException | IllegalArgumentException e) {
                                 e.printStackTrace();
                             }
@@ -119,7 +113,6 @@ public class Console {
                             try {
                                 Book book = parseBook(items);
                                 bookService.update(book);
-                                System.out.println("Book was updated successfully!");
                             } catch (ValidationException | IllegalArgumentException | NoSuchElementException e) {
                                 e.printStackTrace();
                             }
@@ -231,7 +224,10 @@ public class Console {
     private Book parseBook(List<String> items) throws IllegalArgumentException {
         Book book = new Book(items.get(0), items.get(1));
         List<String> authors = Arrays.asList(items.get(2).split(";"));
-        book.setAuthors(authors.stream().map(a -> new NamedEntity(1, a))
+        List<String[]> arg = new ArrayList<>();
+        authors.forEach(a -> arg.add(a.split("-")));
+        book.setAuthors(arg.stream()
+                .map(a -> new NamedEntity(a[0], a[1]))
                 .collect(Collectors.toList()));
         Timestamp date = Timestamp.valueOf(items.get(3));
         Double price = Double.valueOf(items.get(4));

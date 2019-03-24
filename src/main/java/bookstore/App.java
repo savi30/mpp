@@ -18,7 +18,7 @@ public class App {
     public static void main(String[] args) {
         RepositoryFactory repositoryFactory = new RepositoryFactory();
         Repository bookRepository = repositoryFactory.getDBRepository(Book.class);
-        Repository userRepository = repositoryFactory.getXMLRepository(User.class, "Data/UsersXML.xml");
+        Repository userRepository = repositoryFactory.getDBRepository(User.class);
         Repository logsRepository = repositoryFactory.getXMLRepository(LogsEntry.class, "Data/LogsXML.xml");
 
         BookService bookService = new BookService(bookRepository);

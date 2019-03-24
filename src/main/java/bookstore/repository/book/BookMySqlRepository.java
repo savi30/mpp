@@ -32,8 +32,11 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
             SqlQueryBuilder builder = new SqlQueryBuilder();
             String query = builder.select("*").from(BOOKS_TABLE).where(builder.eq("id", id)).build();
             ResultSet result = statement.executeQuery(query);
-            optional = objectMapper.map(result);
-            this.getAuthors(connection, Collections.singletonList(optional.get()));
+            if(result.isBeforeFirst()) {
+                result.next();
+                optional = objectMapper.map(result);
+                this.getAuthors(connection, Collections.singletonList(optional.get()));
+            }
             statement.close();
             statement.close();
         } catch (SQLException e) {
@@ -115,7 +118,7 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
             String query = builder
                     .update("books")
                     .set("title=" + entity.getTitle(), "price=" + entity.getPrice(), "quantity=" + entity.getQuantity(),
-                            "publishYear=" + entity.getPublishYear())
+                            "`publish_year`=\"" + entity.getPublishYear()+"\"")
                     .where(builder.eq("id", entity.getId()))
                     .build();
             statement.executeUpdate(query);
@@ -129,21 +132,52 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
     }
 
 
+    @SuppressWarnings("unchecked")
     @Override
-    public Optional<Book> save(Book entity) throws ValidationException {
+    public Optional<Book> save(Book entity) {
         Optional<Book> optional = this.findById(entity.getId());
         try (Connection connection = MySqlDatabaseConnector.getConnection()) {
             connection.setAutoCommit(false);
             SqlQueryBuilder builder = new SqlQueryBuilder();
             Statement statement = connection.createStatement();
-            String query = builder
-                    .insert("books")
-                    .set("title=" + entity.getTitle(), "price=" + entity.getPrice(), "quantity=" + entity.getQuantity(),
-                            "publishYear=" + entity.getPublishYear())
-                    .where(builder.eq("id", entity.getId()))
-                    .build();
-            statement.executeUpdate(query);
-            saveAuthors(connection, entity.getAuthors(), entity.getId());
+            final Optional<ValidationException>[] ex = new Optional[1];
+            try{
+                validator.validate(entity);
+                ex[0] = Optional.empty();
+            }catch (ValidationException ve){
+                ex[0] = Optional.of(ve);
+            }
+            final String[] query = new String[1];
+            optional.ifPresentOrElse(
+                    opt -> {
+                        try {
+                                query[0] = builder
+                                        .update("books")
+                                        .set("quantity=" + (entity.getQuantity() + opt.getQuantity()))
+                                        .where(builder.eq("id", entity.getId()))
+                                        .build();
+                                statement.executeUpdate(query[0]);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        },
+                    ()-> ex[0].ifPresentOrElse(Throwable::printStackTrace,
+                            ()-> {
+                                try {
+                                        query[0] = builder
+                                                .insert("books")
+                                                .set("id="+entity.getId(), "title=" + entity.getTitle(), "price=" +
+                                                                entity.getPrice(), "quantity=" + entity.getQuantity(),
+                                                        "`publish_year`=\"" + entity.getPublishYear()+"\"")
+                                                .build();
+                                        statement.executeUpdate(query[0]);
+                                        saveAuthors(connection, entity.getAuthors(), entity.getId());
+                                } catch (SQLException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                            )
+            );
             statement.close();
             connection.commit();
         } catch (SQLException e) {
@@ -246,7 +280,7 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
         SqlQueryBuilder builder = new SqlQueryBuilder();
         List<String> queries = new ArrayList<>();
         authors.forEach(author -> {
-            queries.add(builder.update("authors").set("name=" + author.getName())
+            queries.add(builder.update("authors").set("`name`=" + author.getName())
                     .where(builder.eq("id", author.getId().toString())).build());
         });
         queries.forEach(query -> {
@@ -278,7 +312,7 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
                 .collect(Collectors.toList());
         List<String> queries = new ArrayList<>();
         unknownAuthors.forEach(author -> {
-            queries.add(builder.insert("authors").values("id=" + author.getId(), "name=" + author.getName()).build());
+            queries.add(builder.insert("authors").set("id=" + author.getId(), "`name`=\"" + author.getName()).build()+"\"");
         });
         statement.close();
         Statement batchStatement = connection.createStatement();
@@ -293,10 +327,8 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
         batchStatement.close();
 
         queries.clear();
-        authors.forEach(author -> {
-            queries.add(
-                    builder.insert("authors_books").values("book_id=" + bookId, "author_id=" + author.getId()).build());
-        });
+        authors.forEach(author -> queries.add(
+                builder.insert("authors_books").set("book_id=" + bookId, "author_id=" + author.getId()).build()));
 
         Statement authorBooksStatement = connection.createStatement();
         queries.forEach(q -> {
@@ -336,3 +368,4 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
 
 }
 
+//99,12,12-Me;13-Notme,2000-01-01 00:00:00,21,111
