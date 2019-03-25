@@ -18,9 +18,10 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.Serializable;
 import java.util.Optional;
 
-public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
+public class XMLRepository<ID extends Serializable, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
     private String fileName;
     protected Reader<T> reader;
 
@@ -63,11 +64,8 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
     @Override
     public Optional<T> save(T entity) throws ValidationException {
         Optional<T> optional = super.save(entity);
-        if (optional.isPresent()) {
-            return optional;
-        }
-        saveToXML(entity);
-        return Optional.empty();
+        optional.ifPresentOrElse(opt -> {}, () -> saveToXML(entity));
+        return optional;
     }
 
     /**
@@ -77,11 +75,8 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
     @Override
     public Optional<T> delete(ID id){
         Optional<T> optional = super.delete(id);
-        if (optional.isPresent()) {
-            deleteFromXML(id);
-            return optional;
-        }
-        return Optional.empty();
+        optional.ifPresent(opt -> deleteFromXML(id));
+        return optional;
     }
 
     /**
@@ -91,11 +86,8 @@ public class XMLRepository<ID, T extends Entity<ID>> extends InMemoryRepository<
     @Override
     public Optional<T> update(T entity)throws ValidationException {
         Optional<T> optional = super.update(entity);
-        if (optional.isPresent()) {
-            updateXML(entity);
-            return optional;
-        }
-        return Optional.empty();
+        optional.ifPresent(opt -> updateXML(entity));
+        return optional;
     }
 
     protected void updateXML(T entity){

@@ -17,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class UserMySqlRepository extends DBRepository<String, User> implements UserRepository {
     private static final String USERS_TABLE = "users";
@@ -36,7 +37,10 @@ public class UserMySqlRepository extends DBRepository<String, User> implements U
             SqlQueryBuilder builder = new SqlQueryBuilder();
             String query = builder.select("*").from(USERS_TABLE).where(builder.eq("id", id)).build();
             ResultSet result = statement.executeQuery(query);
-            optional = objectMapper.map(result);
+            if(result.isBeforeFirst()) {
+                result.next();
+                optional = objectMapper.map(result);
+            }
             statement.close();
             statement.close();
 
@@ -48,7 +52,7 @@ public class UserMySqlRepository extends DBRepository<String, User> implements U
 
     @Override
     public Collection<User> findByName(String name){
-        return null;
+        return this.findAll().stream().filter(user -> user.getName().contains(name)).collect(Collectors.toSet());
     }
 
     @Override
@@ -59,7 +63,7 @@ public class UserMySqlRepository extends DBRepository<String, User> implements U
             SqlQueryBuilder builder = new SqlQueryBuilder();
             String query = builder
                     .select("*")
-                    .from(USERS_TABLE)
+                    .from("users")
                     .build();
             ResultSet result = statement.executeQuery(query);
             while (result.next()) {

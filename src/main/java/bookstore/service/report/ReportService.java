@@ -28,7 +28,7 @@ public class ReportService {
     public User getMostActiveCustomer() {
         List<LogsEntry> logs = logsService.findAll();
         final String[] userId = new String[1];
-        logs.stream().collect(Collectors.groupingBy(LogsEntry::getClientId, Collectors.counting())).entrySet().stream()
+        logs.stream().collect(Collectors.groupingBy(LogsEntry::getUser_id, Collectors.counting())).entrySet().stream()
                 .reduce((a, b) -> a.getValue() > b.getValue() ? a : b)
                 .ifPresentOrElse(e -> userId[0] = e.getKey(), () -> userId[0] = "");
         return userService.findById(userId[0]);
@@ -37,7 +37,7 @@ public class ReportService {
     public User getCustomerWhoSpentMost() {
         List<LogsEntry> logs = logsService.findAll();
         final String[] userId = new String[1];
-        logs.stream().collect(Collectors.groupingBy(LogsEntry::getClientId)).entrySet().stream()
+        logs.stream().collect(Collectors.groupingBy(LogsEntry::getUser_id)).entrySet().stream()
                 .reduce((a, b) -> a.getValue().stream()
                         .reduce((double) 0, (sum, e) -> sum += bookService.findById(e.getBookId()).getPrice(),
                                 (sum1, sum2) -> sum1 + sum2) > b.getValue().stream()

@@ -61,7 +61,7 @@ public class LogReader implements Reader<LogsEntry> {
         Element element = document.createElement("logEntry");
         element.setAttribute("id", entity.getId());
         root.appendChild(element);
-        appendChildWithText(document, element, "clientId", entity.getClientId());
+        appendChildWithText(document, element, "clientId", entity.getUser_id());
         appendChildWithText(document, element, "bookId", entity.getBookId());
         appendChildWithText(document, element, "year",
                 String.valueOf(entity.getTransactionDate()));

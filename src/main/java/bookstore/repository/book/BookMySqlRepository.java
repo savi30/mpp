@@ -109,7 +109,7 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
     }
 
     @Override
-    public Optional<Book> update(Book entity) throws ValidationException {
+    public Optional<Book> update(Book entity){
         Optional<Book> optional = this.findById(entity.getId());
         try (Connection connection = MySqlDatabaseConnector.getConnection()) {
             connection.setAutoCommit(false);
@@ -215,7 +215,7 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
 
     @Override
     public Collection<Book> findByTitle(String title) {
-        String criteria = "title=" + title;
+        String criteria = "`title`=\"" + title+"\"";
         return findAll(criteria);
     }
 
@@ -367,5 +367,3 @@ public class BookMySqlRepository extends DBRepository<String, Book> implements B
     }
 
 }
-
-//99,12,12-Me;13-Notme,2000-01-01 00:00:00,21,111

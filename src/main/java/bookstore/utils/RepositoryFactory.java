@@ -7,6 +7,7 @@ import bookstore.repository.book.BookMySqlRepository;
 import bookstore.repository.book.BookXMLRepository;
 import bookstore.repository.logs.LogsFileRepository;
 import bookstore.repository.logs.LogsInMemoryRepository;
+import bookstore.repository.logs.LogsMySqlRepository;
 import bookstore.repository.logs.LogsXMLRepository;
 import bookstore.repository.user.UserFileRepository;
 import bookstore.repository.user.UserInMemoryRepository;
@@ -73,8 +74,8 @@ public class RepositoryFactory {
                 return new BookMySqlRepository(validator);
             case USER:
                 return new UserMySqlRepository(validator);
-//            case LOGS:
-//                return new LogsXMLRepository(validator);
+            case LOGS:
+                return new LogsMySqlRepository(validator);
             default:
                 return null;
         }

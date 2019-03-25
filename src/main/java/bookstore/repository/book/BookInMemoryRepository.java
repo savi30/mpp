@@ -44,9 +44,8 @@ public class BookInMemoryRepository extends InMemoryRepository<String, Book> imp
         }
         validator.validate(entity);
         Optional<Book> optional = Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
-        if (optional.isPresent() && optional.get() != entity) {
-            entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
-        }
+        optional.ifPresent(opt -> entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() +
+                entity.getQuantity()));
         return optional;
     }
 

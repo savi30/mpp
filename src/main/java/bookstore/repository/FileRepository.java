@@ -7,13 +7,14 @@ import bookstore.utils.validator.exception.ValidationException;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.Optional;
 
-public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
+public class FileRepository<ID extends Serializable, T extends Entity<ID>> extends InMemoryRepository<ID, T> {
     private String fileName;
     private Reader<T> reader;
     public FileRepository(Validator<T> validator, String fileName, Reader<T> reader) {
@@ -62,12 +63,12 @@ public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository
     @Override
     public Optional<T> save(T entity) throws ValidationException {
         Optional<T> optional = super.save(entity);
-        if (optional.isPresent()) {
-            writeAllToFile();
-            return optional;
-        }
-        saveToFile(entity);
-        return Optional.empty();
+        optional.ifPresentOrElse(
+                opt -> writeAllToFile(),
+                () -> saveToFile(entity)
+                );
+
+        return optional;
     }
 
     /**
@@ -77,11 +78,8 @@ public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository
     @Override
     public Optional<T> delete(ID id){
         Optional<T> optional = super.delete(id);
-        if (optional.isPresent()) {
-            writeAllToFile();
-            return optional;
-        }
-        return Optional.empty();
+        optional.ifPresent(opt -> writeAllToFile());
+        return optional;
     }
 
     /**
@@ -91,11 +89,8 @@ public class FileRepository<ID, T extends Entity<ID>> extends InMemoryRepository
     @Override
     public Optional<T> update(T entity)throws ValidationException {
         Optional<T> optional = super.update(entity);
-        if (optional.isPresent()) {
-            writeAllToFile();
-            return optional;
-        }
-        return Optional.empty();
+        optional.ifPresent(opt -> writeAllToFile());
+        return optional;
     }
 
     /**

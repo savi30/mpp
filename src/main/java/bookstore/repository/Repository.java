@@ -1,6 +1,8 @@
 package bookstore.repository;
 
 import bookstore.domain.core.Entity;
+import bookstore.repository.paging.Page;
+import bookstore.repository.paging.Pageable;
 import bookstore.utils.validator.exception.ValidationException;
 
 import java.util.Collection;
@@ -59,5 +61,7 @@ public interface Repository<ID, T extends Entity<ID>> {
      * @throws IllegalArgumentException if the given id is null.
      */
     Optional<T> delete(ID id);
+
+    Page<T> findAll(Pageable pageable);
 
 }
