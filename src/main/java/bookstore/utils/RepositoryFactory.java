@@ -7,9 +7,11 @@ import bookstore.repository.book.BookMySqlRepository;
 import bookstore.repository.book.BookXMLRepository;
 import bookstore.repository.logs.LogsFileRepository;
 import bookstore.repository.logs.LogsInMemoryRepository;
+import bookstore.repository.logs.LogsMySqlRepository;
 import bookstore.repository.logs.LogsXMLRepository;
 import bookstore.repository.user.UserFileRepository;
 import bookstore.repository.user.UserInMemoryRepository;
+import bookstore.repository.user.UserMySqlRepository;
 import bookstore.repository.user.UserXMLRepository;
 import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
@@ -70,10 +72,10 @@ public class RepositoryFactory {
         switch (objectType.getName()) {
             case BOOK:
                 return new BookMySqlRepository(validator);
-/*            case USER:
-                return new UserXMLRepository(validator);
+            case USER:
+                return new UserMySqlRepository(validator);
             case LOGS:
-                return new LogsXMLRepository(validator);*/
+                return new LogsMySqlRepository(validator);
             default:
                 return null;
         }

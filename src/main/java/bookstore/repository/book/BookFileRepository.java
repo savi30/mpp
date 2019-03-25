@@ -45,12 +45,11 @@ public class BookFileRepository extends FileRepository<String, Book> implements 
         }
         validator.validate(entity);
         Optional<Book> optional = Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
-        if (optional.isPresent()) {
+        optional.ifPresentOrElse(opt -> {
             entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
             writeAllToFile();
-        } else {
-            saveToFile(entity);
-        }
+            },
+                () -> saveToFile(entity));
         return optional;
     }
 

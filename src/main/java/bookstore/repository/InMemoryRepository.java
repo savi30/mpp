@@ -1,22 +1,29 @@
 package bookstore.repository;
 
 import bookstore.domain.core.Entity;
+import bookstore.repository.paging.Page;
+import bookstore.repository.paging.Pageable;
+import bookstore.repository.paging.PagingRepository;
+import bookstore.repository.paging.impl.PagingService;
 import bookstore.utils.validator.Validator;
 import bookstore.utils.validator.exception.ValidationException;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * @author pollos_hermanos.
  */
-public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<ID, T> {
+public class InMemoryRepository<ID extends Serializable, T extends Entity<ID>> implements Repository<ID, T>, PagingRepository<ID, T> {
 
     protected Map<ID, T> entities;
     protected Validator<T> validator;
+    private PagingService<T> pagingService;
 
     public InMemoryRepository(Validator<T> validator) {
         this.validator = validator;
         this.entities = new HashMap<>();
+        this.pagingService = new PagingService<>();
     }
 
     @Override
@@ -56,5 +63,10 @@ public class InMemoryRepository<ID, T extends Entity<ID>> implements Repository<
         }
         validator.validate(entity);
         return Optional.ofNullable(entities.computeIfPresent(entity.getId(), (k, v) -> entity));
+    }
+
+    @Override
+    public Page<T> findAll(Pageable pageable) {
+        return pagingService.getPagedResponse(this.findAll(), pageable);
     }
 }

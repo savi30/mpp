@@ -41,12 +41,11 @@ public class BookXMLRepository extends XMLRepository<String, Book> implements Bo
         }
         validator.validate(entity);
         Optional<Book> optional = Optional.ofNullable(entities.putIfAbsent(entity.getId(), entity));
-        if (optional.isPresent()) {
+        optional.ifPresentOrElse(opt -> {
             entities.get(entity.getId()).setQuantity(entities.get(entity.getId()).getQuantity() + entity.getQuantity());
             updateXML(entities.get(entity.getId()));
-        } else {
-            saveToXML(entity);
-        }
+        },
+                () -> saveToXML(entity));
         return optional;
     }
 

@@ -71,7 +71,7 @@ public class Book extends NamedEntity<String> {
     }
 
     public String getAuthorsString() {
-        return authors.stream().map(author -> author.getName())
+        return authors.stream().map(author -> author.getId() +"." + author.getName())
                 .collect(Collectors.joining(";"));
     }
 
