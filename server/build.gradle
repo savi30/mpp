@@ -1,0 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+
+    }
+    dependencies{
+        classpath 'mysql:mysql-connector-java:8.0.15'
+    }
+}
+
+dependencies {
+    implementation 'mysql:mysql-connector-java:8.0.15'
+}
+

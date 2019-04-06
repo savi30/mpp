@@ -6,7 +6,6 @@ import bookstore.domain.logs.LogsEntry;
 import bookstore.domain.user.User;
 import bookstore.repository.paging.Page;
 import bookstore.repository.paging.impl.PageRequest;
-import bookstore.repository.paging.impl.PageResponse;
 import bookstore.service.AbstractCRUDService;
 import bookstore.service.book.BookService;
 import bookstore.service.logs.LogsService;
