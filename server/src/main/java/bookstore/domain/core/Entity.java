@@ -1,10 +1,12 @@
 package bookstore.domain.core;
 
+import java.io.Serializable;
+
 /**
  * Class for a generic Entity with an ID.
  * @author pollos_hermanos.
  */
-public class Entity<ID> {
+public class Entity<ID> implements Serializable {
     private ID id;
 
     public Entity(){}

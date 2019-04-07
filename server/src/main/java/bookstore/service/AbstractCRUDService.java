@@ -31,18 +31,16 @@ public class AbstractCRUDService<ID, T extends Entity<ID>> {
         return new ArrayList<>(entities);
     }
 
-    public T update(T entity) throws ValidationException {
-        Optional<T> newEntity = repository.update(entity);
-        return newEntity.get();
+    public Optional<T> update(T entity) throws ValidationException {
+        return repository.update(entity);
     }
 
-    public void save(T entity) throws ValidationException {
-        repository.save(entity);
+    public Optional<T> save(T entity) throws ValidationException {
+        return repository.save(entity);
     }
 
-    public T delete(ID id) {
-        Optional<T> entity = repository.delete(id);
-        return entity.get();
+    public Optional<T> delete(ID id) {
+        return repository.delete(id);
     }
 
     public Repository<ID, T> getRepository() {

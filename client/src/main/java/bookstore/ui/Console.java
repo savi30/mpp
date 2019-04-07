@@ -1,17 +1,12 @@
 package bookstore.ui;
 
+import bookstore.Service.ClientService;
 import bookstore.domain.book.Book;
 import bookstore.domain.core.NamedEntity;
-import bookstore.domain.logs.LogsEntry;
 import bookstore.domain.user.User;
 import bookstore.repository.paging.Page;
 import bookstore.repository.paging.impl.PageRequest;
 import bookstore.service.AbstractCRUDService;
-import bookstore.service.book.BookService;
-import bookstore.service.logs.LogsService;
-import bookstore.service.report.ReportService;
-import bookstore.service.user.UserService;
-import bookstore.utils.RepositoryFactory;
 import bookstore.utils.validator.exception.ValidationException;
 
 import java.io.BufferedReader;
@@ -19,52 +14,18 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.sql.Timestamp;
 import java.util.*;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.stream.Collectors;
 
 /**
  * @author pollos_hermanos.
  */
 public class Console {
-    private BookService bookService;
-    private UserService userService;
-    private ReportService reportService;
+    private ClientService clientService;
 
-    @SuppressWarnings("unchecked")
-    public Console() {
-        RepositoryFactory repositoryFactory = new RepositoryFactory();
-        Scanner scanner = new Scanner(System.in);
-        LogsService logsService;
-        label2:
-        while(true){
-            System.out.println("Choose repository type: inMemory, file, xml, db");
-            String type = scanner.next();
-            switch (type) {
-                case "inMemory":
-                    bookService = new BookService(repositoryFactory.getRepository(Book.class));
-                    userService = new UserService(repositoryFactory.getRepository(User.class));
-                    logsService = new LogsService(repositoryFactory.getRepository(LogsEntry.class));
-                    break label2;
-                case "file":
-                    bookService = new BookService(repositoryFactory.getFileRepository(Book.class, "Data/Books"));
-                    userService = new UserService(repositoryFactory.getFileRepository(User.class, "Data/Users"));
-                    logsService = new LogsService(repositoryFactory.getFileRepository(LogsEntry.class, "Data/Logs"));
-                    break label2;
-                case "xml":
-                    bookService = new BookService(repositoryFactory.getXMLRepository(Book.class, "Data/BooksXML.xml"));
-                    userService = new UserService(repositoryFactory.getXMLRepository(User.class, "Data/UsersXML.xml"));
-                    logsService = new LogsService(repositoryFactory.getXMLRepository(LogsEntry.class, "Data/LogsXML.xml"));
-                    break label2;
-                case "db":
-                    bookService = new BookService(repositoryFactory.getDBRepository(Book.class));
-                    userService = new UserService(repositoryFactory.getDBRepository(User.class));
-                    logsService = new LogsService(repositoryFactory.getDBRepository(LogsEntry.class));
-                    break label2;
-                default:
-                    System.out.println("No such type");
-                    break;
-            }
-        }
-        reportService = new ReportService(bookService,userService, logsService);
+    public Console(ClientService clientService) {
+        this.clientService = clientService;
     }
 
     public void runConsole() {
@@ -91,11 +52,16 @@ public class Console {
                             System.out.println("Wrong parameters, should be: id, name!");
                         } else {
                             User user = new User(items.get(0), items.get(1));
-                            try {
-                                userService.save(user);
-                            } catch (ValidationException e) {
+                            try{
+                                Optional<User> optionalUser = clientService.addUser(user).get();
+                                optionalUser.ifPresentOrElse(
+                                        opt -> System.out.println("Given id already exists!"),
+                                        () -> System.out.println("User added successfully!")
+                                );
+                            }catch (InterruptedException | ExecutionException e){
                                 e.printStackTrace();
                             }
+
                         }
                         break;
                     }
@@ -103,7 +69,15 @@ public class Console {
                         System.out.println("Delete user with id:");
                         params = bufferedReader.readLine();
                         try {
-                            userService.delete(params);
+                            try{
+                                Optional<User> optionalUser = clientService.deleteUser(params).get();
+                                optionalUser.ifPresentOrElse(
+                                        opt -> System.out.println("User was deleted!"),
+                                        () -> System.out.println("No such user!")
+                                );
+                            }catch (InterruptedException | ExecutionException e){
+                                e.printStackTrace();
+                            }
                         } catch (NoSuchElementException e) {
                             e.printStackTrace();
                         }
@@ -118,26 +92,34 @@ public class Console {
                             System.out.println("Wrong parameters, should be: id, name!");
                         } else {
                             User user = new User(items.get(0), items.get(1));
-                            try {
-                                userService.update(user);
-                            } catch (ValidationException | NoSuchElementException e) {
+                            try{
+                                Optional<User> optionalUser = clientService.updateUser(user).get();
+                                optionalUser.ifPresentOrElse(
+                                        opt -> System.out.println("User updated!"),
+                                        () -> System.out.println("No such user!")
+                                );
+                            }catch (InterruptedException | ExecutionException e){
                                 e.printStackTrace();
                             }
                         }
                         break;
                     }
                     case "addBook": {
-                        System.out.println("Add Book {id, Title, author_id.AuthorName, timestamp, price, quantity}");
+                        System.out.println("Add Book {id, Title, author_id-AuthorName, timestamp, price, quantity}");
                         params = bufferedReader.readLine();
                         List<String> items = Arrays.asList(params.split(","));
                         if (items.size() != 6) {
                             System.out.println(
                                     "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
                         } else {
-                            try {
+                            try{
                                 Book book = parseBook(items);
-                                bookService.save(book);
-                            } catch (ValidationException | IllegalArgumentException e) {
+                                Optional<Book> optionalBook = clientService.addBook(book).get();
+                                optionalBook.ifPresentOrElse(
+                                        opt -> System.out.println("Stock increased for already existing book!"),
+                                        () -> System.out.println("Book added successfully!")
+                                );
+                            }catch (InterruptedException | ExecutionException e){
                                 e.printStackTrace();
                             }
                         }
@@ -151,10 +133,14 @@ public class Console {
                             System.out.println(
                                     "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
                         } else {
-                            try {
+                            try{
                                 Book book = parseBook(items);
-                                bookService.update(book);
-                            } catch (ValidationException | IllegalArgumentException | NoSuchElementException e) {
+                                Optional<Book> optionalBook = clientService.updateBook(book).get();
+                                optionalBook.ifPresentOrElse(
+                                        opt -> System.out.println("Book updated!"),
+                                        () -> System.out.println("No such book!")
+                                );
+                            }catch (InterruptedException | ExecutionException e){
                                 e.printStackTrace();
                             }
                         }
@@ -163,9 +149,13 @@ public class Console {
                     case "deleteBook": {
                         System.out.println("Delete book with id:");
                         params = bufferedReader.readLine();
-                        try {
-                            bookService.delete(params);
-                        } catch (NoSuchElementException e) {
+                        try{
+                            Optional<Book> optionalUser = clientService.deleteBook(params).get();
+                            optionalUser.ifPresentOrElse(
+                                    opt -> System.out.println("Book was deleted!"),
+                                    () -> System.out.println("No such book!")
+                            );
+                        }catch (InterruptedException | ExecutionException e){
                             e.printStackTrace();
                         }
                         break;
@@ -178,18 +168,18 @@ public class Console {
                         printAllUsers();
                         break;
                     }
-                    case "printUsersWithPaging":
-                        printAllEntitiesWithPaging(userService);
-                        break;
-                    case "printBooksWithPaging":
-                        printAllEntitiesWithPaging(bookService);
-                        break;
-                    case "mostActive":
-                        System.out.println(reportService.getMostActiveCustomer());
-                        break ;
-                    case "biggestSpender":
-                        System.out.println(reportService.getCustomerWhoSpentMost());
-                        break ;
+//                    case "printUsersWithPaging":
+//                        printAllEntitiesWithPaging(userService);
+//                        break;
+//                    case "printBooksWithPaging":
+//                        printAllEntitiesWithPaging(bookService);
+//                        break;
+//                    case "mostActive":
+//                        System.out.println(reportService.getMostActiveCustomer());
+//                        break ;
+//                    case "biggestSpender":
+//                        System.out.println(reportService.getCustomerWhoSpentMost());
+//                        break ;
                     case "buyBook": {
                         System.out.println("Buy book {bookId, userId}");
                         params = bufferedReader.readLine();
@@ -197,60 +187,65 @@ public class Console {
                         if (items.size() != 2) {
                             System.out.println("Wrong parameters, should be: bookId, userId!");
                         } else {
-                            Optional<Book> optional = bookService.buy(items.get(0), items.get(1));
-                            optional.ifPresentOrElse( opt -> System.out.println("Buy was successful!"),
-                                    ()-> System.out.println("Book not in stock!"));
+                            try {
+                                Optional<Book> optional = clientService.buyBook(items.get(0), items.get(1)).get();
+                                optional.ifPresentOrElse( opt -> System.out.println("Buy was successful!"),
+                                        ()-> System.out.println("Book not in stock!"));
+                            }catch (InterruptedException | ExecutionException e){
+                                e.printStackTrace();
+                            }
+
                         }
                         break;
                     }
-                    case "filterBooksByTitle": {
-                        System.out.println("Filter book by title:");
-                        params = bufferedReader.readLine();
-                        bookService.filterBooksByTitle(params).forEach(System.out::println);
-                        break;
-                    }
-                    case "filterBooksByQuantity": {
-                        System.out.println("Filter book by quantity:");
-                        params = bufferedReader.readLine();
-                        bookService.filterBooksByQuantity(Integer.valueOf(params)).forEach(System.out::println);
-                        break;
-                    }
-                    case "filterBooksByAuthor": {
-                        System.out.println("Filter books by author:");
-                        params = bufferedReader.readLine();
-                        bookService.filterBooksByAuthor(params).forEach(System.out::println);
-                        break;
-                    }
-                    case "filterBooksByDate": {
-                        System.out.println("Filter books by date {start date, end date}");
-                        params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 2) {
-                            System.out.println("Wrong parameters, should be {start date, end date}");
-                        } else {
-                            bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
-                                    Timestamp.valueOf(items.get(1))).forEach(System.out::println);
-                        }
-                        break;
-                    }
-                    case "filterBooksByPrice": {
-                        System.out.println("Filter books by price {min price, max price}");
-                        params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 2) {
-                            System.out.println("Wrong parameteres, should be {min price, max price}");
-                        } else {
-                            bookService.filterBooksByPrice(Double.valueOf(items.get(0)), Double.valueOf(items.get(1)))
-                                    .forEach(System.out::println);
-                        }
-                        break;
-                    }
-                    case "filterUsersByName": {
-                        System.out.println("Filter users by name:");
-                        params = bufferedReader.readLine();
-                        userService.filterUsersByName(params).forEach(System.out::println);
-                        break;
-                    }
+//                    case "filterBooksByTitle": {
+//                        System.out.println("Filter book by title:");
+//                        params = bufferedReader.readLine();
+//                        bookService.filterBooksByTitle(params).forEach(System.out::println);
+//                        break;
+//                    }
+//                    case "filterBooksByQuantity": {
+//                        System.out.println("Filter book by quantity:");
+//                        params = bufferedReader.readLine();
+//                        bookService.filterBooksByQuantity(Integer.valueOf(params)).forEach(System.out::println);
+//                        break;
+//                    }
+//                    case "filterBooksByAuthor": {
+//                        System.out.println("Filter books by author:");
+//                        params = bufferedReader.readLine();
+//                        bookService.filterBooksByAuthor(params).forEach(System.out::println);
+//                        break;
+//                    }
+//                    case "filterBooksByDate": {
+//                        System.out.println("Filter books by date {start date, end date}");
+//                        params = bufferedReader.readLine();
+//                        List<String> items = Arrays.asList(params.split(","));
+//                        if (items.size() != 2) {
+//                            System.out.println("Wrong parameters, should be {start date, end date}");
+//                        } else {
+//                            bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
+//                                    Timestamp.valueOf(items.get(1))).forEach(System.out::println);
+//                        }
+//                        break;
+//                    }
+//                    case "filterBooksByPrice": {
+//                        System.out.println("Filter books by price {min price, max price}");
+//                        params = bufferedReader.readLine();
+//                        List<String> items = Arrays.asList(params.split(","));
+//                        if (items.size() != 2) {
+//                            System.out.println("Wrong parameteres, should be {min price, max price}");
+//                        } else {
+//                            bookService.filterBooksByPrice(Double.valueOf(items.get(0)), Double.valueOf(items.get(1)))
+//                                    .forEach(System.out::println);
+//                        }
+//                        break;
+//                    }
+//                    case "filterUsersByName": {
+//                        System.out.println("Filter users by name:");
+//                        params = bufferedReader.readLine();
+//                        userService.filterUsersByName(params).forEach(System.out::println);
+//                        break;
+//                    }
                     default:
                         System.out.println("Wrong command!");
                         break;
@@ -262,13 +257,25 @@ public class Console {
     }
 
     private void printAllBooks(){
-        List<Book> books = bookService.findAll();
-        books.forEach(System.out::println);
+        Future<List<Book>> result = clientService.getBooks();
+
+        try {
+            result.get().forEach(System.out::println);
+            System.out.println("Done!");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     private void printAllUsers(){
-        List<User> users = userService.findAll();
-        users.forEach(System.out::println);
+        Future<List<User>> result = clientService.getUsers();
+
+        try {
+            result.get().forEach(System.out::println);
+            System.out.println("Done!");
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        }
     }
 
     private void printAllEntitiesWithPaging(AbstractCRUDService service) {

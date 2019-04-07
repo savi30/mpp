@@ -5,6 +5,10 @@ allprojects {
     group = 'com.los_pollos_hermanos'
     version = '1.0-SNAPSHOT'
 
+    repositories{
+        mavenCentral()
+    }
+
     dependencies {
         implementation 'com.google.guava:guava:27.0.1-jre'
         testImplementation 'junit:junit:4.12'
