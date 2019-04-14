@@ -1,9 +1,10 @@
 package bookstore.service.book;
 
 import bookstore.domain.book.Book;
-import bookstore.repository.Repository;
 import bookstore.repository.book.BookRepository;
-import bookstore.service.AbstractCRUDService;
+import bookstore.service.CrudService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -13,9 +14,13 @@ import java.util.Optional;
 /**
  * @author pollos_hermanos.
  */
-public class BookService extends AbstractCRUDService<String, Book> {
+@Component
+public class BookService extends CrudService<String, Book> {
+    private BookRepository repository;
 
-    public BookService(Repository<String, Book> repository) {
+    @Autowired
+    public BookService(BookRepository repository) {
+        super(repository);
         this.repository = repository;
     }
 
@@ -27,7 +32,8 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
      */
     public Optional<Book> buy(String bookId, String clientId) {
-        return ((BookRepository) repository).buy(bookId, clientId);
+        //return repository.buy(bookId, clientId);
+        return Optional.empty();
     }
 
     /**
@@ -36,7 +42,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByTitle(String s) {
-        return ((BookRepository) repository).findByTitle(s);
+        return repository.findByTitle(s);
 
     }
 
@@ -46,7 +52,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByAuthor(String s) {
-        return ((BookRepository) repository).findByAuthor(s);
+        return repository.findByAuthors(s);
 
     }
 
@@ -56,7 +62,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByDate(Timestamp t1, Timestamp t2) {
-        return ((BookRepository) repository).findByDate(t1, t2);
+        return repository.findByPublishYearBetween(t1, t2);
     }
 
     /**
@@ -65,10 +71,10 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @return a set with the filtered books.
      */
     public Collection<Book> filterBooksByPrice(Double p1, Double p2) {
-        return ((BookRepository) repository).findByPrice(p1, p2);
+        return repository.findByPriceBetween(p1, p2);
     }
 
     public Collection<Book> filterBooksByQuantity(Integer quantity) {
-        return ((BookRepository) repository).findByQuantity(quantity);
+        return repository.findByQuantity(quantity);
     }
 }

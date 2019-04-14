@@ -1,19 +1,13 @@
 package bookstore.ui;
 
 import bookstore.domain.book.Book;
-import bookstore.domain.core.NamedEntity;
-import bookstore.domain.logs.LogsEntry;
+import bookstore.domain.user.Author;
 import bookstore.domain.user.User;
-import bookstore.repository.paging.Page;
-import bookstore.repository.paging.impl.PageRequest;
-import bookstore.repository.paging.impl.PageResponse;
-import bookstore.service.AbstractCRUDService;
 import bookstore.service.book.BookService;
-import bookstore.service.logs.LogsService;
 import bookstore.service.report.ReportService;
 import bookstore.service.user.UserService;
-import bookstore.utils.RepositoryFactory;
-import bookstore.utils.validator.exception.ValidationException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -25,47 +19,18 @@ import java.util.stream.Collectors;
 /**
  * @author pollos_hermanos.
  */
+@Component
 public class Console {
     private BookService bookService;
     private UserService userService;
     private ReportService reportService;
 
-    @SuppressWarnings("unchecked")
-    public Console() {
-        RepositoryFactory repositoryFactory = new RepositoryFactory();
-        Scanner scanner = new Scanner(System.in);
-        LogsService logsService;
-        label2:
-        while(true){
-            System.out.println("Choose repository type: inMemory, file, xml, db");
-            String type = scanner.next();
-            switch (type) {
-                case "inMemory":
-                    bookService = new BookService(repositoryFactory.getRepository(Book.class));
-                    userService = new UserService(repositoryFactory.getRepository(User.class));
-                    logsService = new LogsService(repositoryFactory.getRepository(LogsEntry.class));
-                    break label2;
-                case "file":
-                    bookService = new BookService(repositoryFactory.getFileRepository(Book.class, "Data/Books"));
-                    userService = new UserService(repositoryFactory.getFileRepository(User.class, "Data/Users"));
-                    logsService = new LogsService(repositoryFactory.getFileRepository(LogsEntry.class, "Data/Logs"));
-                    break label2;
-                case "xml":
-                    bookService = new BookService(repositoryFactory.getXMLRepository(Book.class, "Data/BooksXML.xml"));
-                    userService = new UserService(repositoryFactory.getXMLRepository(User.class, "Data/UsersXML.xml"));
-                    logsService = new LogsService(repositoryFactory.getXMLRepository(LogsEntry.class, "Data/LogsXML.xml"));
-                    break label2;
-                case "db":
-                    bookService = new BookService(repositoryFactory.getDBRepository(Book.class));
-                    userService = new UserService(repositoryFactory.getDBRepository(User.class));
-                    logsService = new LogsService(repositoryFactory.getDBRepository(LogsEntry.class));
-                    break label2;
-                default:
-                    System.out.println("No such type");
-                    break;
-            }
-        }
-        reportService = new ReportService(bookService,userService, logsService);
+    @Autowired
+    public Console(BookService bookService, UserService userService,
+                   ReportService reportService) {
+        this.bookService = bookService;
+        this.userService = userService;
+        this.reportService = reportService;
     }
 
     public void runConsole() {
@@ -92,11 +57,7 @@ public class Console {
                             System.out.println("Wrong parameters, should be: id, name!");
                         } else {
                             User user = new User(items.get(0), items.get(1));
-                            try {
-                                userService.save(user);
-                            } catch (ValidationException e) {
-                                e.printStackTrace();
-                            }
+                            userService.save(user);
                         }
                         break;
                     }
@@ -119,11 +80,8 @@ public class Console {
                             System.out.println("Wrong parameters, should be: id, name!");
                         } else {
                             User user = new User(items.get(0), items.get(1));
-                            try {
-                                userService.update(user);
-                            } catch (ValidationException | NoSuchElementException e) {
-                                e.printStackTrace();
-                            }
+                            userService.update(user);
+
                         }
                         break;
                     }
@@ -135,12 +93,8 @@ public class Console {
                             System.out.println(
                                     "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
                         } else {
-                            try {
-                                Book book = parseBook(items);
-                                bookService.save(book);
-                            } catch (ValidationException | IllegalArgumentException e) {
-                                e.printStackTrace();
-                            }
+                            Book book = parseBook(items);
+                            bookService.save(book);
                         }
                         break;
                     }
@@ -152,12 +106,8 @@ public class Console {
                             System.out.println(
                                     "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
                         } else {
-                            try {
-                                Book book = parseBook(items);
-                                bookService.update(book);
-                            } catch (ValidationException | IllegalArgumentException | NoSuchElementException e) {
-                                e.printStackTrace();
-                            }
+                            Book book = parseBook(items);
+                            bookService.update(book);
                         }
                         break;
                     }
@@ -180,17 +130,17 @@ public class Console {
                         break;
                     }
                     case "printUsersWithPaging":
-                        printAllEntitiesWithPaging(userService);
+                        //printAllEntitiesWithPaging(userService);
                         break;
                     case "printBooksWithPaging":
-                        printAllEntitiesWithPaging(bookService);
+                        //printAllEntitiesWithPaging(bookService);
                         break;
                     case "mostActive":
                         System.out.println(reportService.getMostActiveCustomer());
-                        break ;
+                        break;
                     case "biggestSpender":
                         System.out.println(reportService.getCustomerWhoSpentMost());
-                        break ;
+                        break;
                     case "buyBook": {
                         System.out.println("Buy book {bookId, userId}");
                         params = bufferedReader.readLine();
@@ -199,8 +149,8 @@ public class Console {
                             System.out.println("Wrong parameters, should be: bookId, userId!");
                         } else {
                             Optional<Book> optional = bookService.buy(items.get(0), items.get(1));
-                            optional.ifPresentOrElse( opt -> System.out.println("Buy was successful!"),
-                                    ()-> System.out.println("Book not in stock!"));
+                            optional.ifPresentOrElse(opt -> System.out.println("Buy was successful!"),
+                                    () -> System.out.println("Book not in stock!"));
                         }
                         break;
                     }
@@ -262,22 +212,22 @@ public class Console {
         }
     }
 
-    private void printAllBooks(){
-        List<Book> books = bookService.findAll();
+    private void printAllBooks() {
+        List<Book> books = (List<Book>) bookService.findAll();
         books.forEach(System.out::println);
     }
 
-    private void printAllUsers(){
-        List<User> users = userService.findAll();
+    private void printAllUsers() {
+        List<User> users = (List<User>) userService.findAll();
         users.forEach(System.out::println);
     }
 
-    private void printAllEntitiesWithPaging(AbstractCRUDService service) {
+    /*private void printAllEntitiesWithPaging(CrudService service) {
         System.out.println("Input page size:");
         Scanner scanner = new Scanner(System.in);
-        PageRequest pageRequest = new PageRequest(0,scanner.nextInt());
+        PageRequest pageRequest = new PageRequest(0, scanner.nextInt());
         Page entities = service.findAll(pageRequest);
-        while (true){
+        while (true) {
             System.out.println("enter 'n' - for next; 'x' - for exit: ");
             String cmd = scanner.next();
             if (cmd.equals("x")) {
@@ -288,14 +238,14 @@ public class Console {
                 System.out.println("Not an option!");
                 continue;
             }
-            if(entities.getContent().count()==0){
+            if (entities.getContent().count() == 0) {
                 System.out.println("Done");
                 break;
             }
             entities.getContent().forEach(System.out::println);
             entities.nextPageable();
         }
-    }
+    }*/
 
     private Book parseBook(List<String> items) throws IllegalArgumentException {
         Book book = new Book(items.get(0), items.get(1));
@@ -303,7 +253,7 @@ public class Console {
         List<String[]> arg = new ArrayList<>();
         authors.forEach(a -> arg.add(a.split("-")));
         book.setAuthors(arg.stream()
-                .map(a -> new NamedEntity(a[0], a[1]))
+                .map(a -> new Author(a[0], a[1]))
                 .collect(Collectors.toList()));
         Timestamp date = Timestamp.valueOf(items.get(3));
         Double price = Double.valueOf(items.get(4));

@@ -1,67 +1,71 @@
 package bookstore.domain.logs;
 
-import bookstore.domain.core.NamedEntity;
-
+import javax.persistence.*;
 import java.sql.Timestamp;
 
-public class LogsEntry extends NamedEntity<String> {
-    private String user_id;
-    private String book_id;
-    private Timestamp transaction_date;
-    private Long transaction_id;
+@Entity
+@Table(name = "store_logs")
+public class LogsEntry {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "transaction_id")
+    private Long transactionId;
 
-    public LogsEntry(String s, String clientId, String bookId, Timestamp transactionDate) {
-        super(s, null);
-        this.transaction_id = Long.valueOf(s);
-        this.user_id = clientId;
-        this.book_id = bookId;
-        this.transaction_date = transactionDate;
-    }
+    @Column(name = "user_id")
+    private String userId;
+
+    @Column(name = "book_id")
+    private String bookId;
+
+    @Column(name = "transaction_date")
+    private Timestamp transactionDate;
 
     public LogsEntry(String clientId, String bookId, Timestamp transactionDate) {
-        this.user_id = clientId;
-        this.book_id = bookId;
-        this.transaction_date = transactionDate;
+        this.userId = clientId;
+        this.bookId = bookId;
+        this.transactionDate = transactionDate;
     }
 
-    public LogsEntry(){}
-
-    public Long getTransaction_id(){
-        return transaction_id;
+    public LogsEntry() {
     }
 
-    public void setTransaction_id(Long transaction_id){
-        this.transaction_id = transaction_id;
+    public Long getTransactionId() {
+        return transactionId;
+    }
+
+    public void setTransactionId(Long transactionId) {
+        this.transactionId = transactionId;
     }
 
 
-    public String getUser_id() {
-        return user_id;
+    public String getUserId() {
+        return userId;
     }
 
     public void setClientId(String clientId) {
-        this.user_id = clientId;
+        this.userId = clientId;
     }
 
     public String getBookId() {
-        return book_id;
+        return bookId;
     }
 
     public void setBookId(String bookId) {
-        this.book_id = bookId;
+        this.bookId = bookId;
     }
 
     public Timestamp getTransactionDate() {
-        return transaction_date;
+        return transactionDate;
     }
 
     public void setTransactionDate(Timestamp transactionDate) {
-        this.transaction_date = transactionDate;
+        this.transactionDate = transactionDate;
     }
 
     @Override
     public String toString() {
-        return this.getTransaction_id() + " " + this.getUser_id() + " " + this.getBookId() + " " + this.getTransactionDate()
+        return this.getTransactionId() + " " + this.getUserId() + " " + this.getBookId() + " " + this
+                .getTransactionDate()
                 .toLocalDateTime().toString();
     }
 }

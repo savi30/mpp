@@ -18,8 +18,13 @@ repositories {
 }
 
 dependencies {
-    implementation 'mysql:mysql-connector-java:8.0.15'
-    implementation 'com.google.guava:guava:27.0.1-jre'
+    compile 'org.slf4j:slf4j-simple:1.6.1'
+    compile 'org.springframework:spring-orm:2.1.6.RELEASE'
+    compile 'org.springframework:spring-context:2.1.6.RELEASE'
+    compile 'org.springframework.data:spring-data-jpa:2.1.6.RELEASE'
+    compile 'mysql:mysql-connector-java:8.0.15'
+    compile 'com.google.guava:guava:27.0.1-jre'
+    compile 'org.hibernate:hibernate-entitymanager:5.4.2.Final'
     testImplementation 'junit:junit:4.12'
 }
 

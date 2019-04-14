@@ -1,7 +1,9 @@
 package bookstore.domain.book;
 
 import bookstore.domain.core.NamedEntity;
+import bookstore.domain.user.Author;
 
+import javax.persistence.*;
 import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,11 +13,24 @@ import java.util.stream.Collectors;
 /**
  * @author pollos_hermanos.
  */
+@Entity
+@Table(name = "books")
+@AttributeOverride(name = "name", column = @Column(name = "title", insertable = false, updatable = false))
 public class Book extends NamedEntity<String> {
     private String title;
-    private List<NamedEntity> authors = new ArrayList<>();
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "authors_books",
+            joinColumns = @JoinColumn(name = "book_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id"))
+    private List<Author> authors = new ArrayList<>();
+
+    @Column(name = "publish_year")
     private Timestamp publishYear = null;
+
     private Double price;
+
     private Integer quantity;
 
     public Book() {
@@ -66,23 +81,16 @@ public class Book extends NamedEntity<String> {
                 .toLocalDateTime() + " - " + quantity + " - " + price + "$";
     }
 
-    public List<NamedEntity> getAuthors() {
+    public List<Author> getAuthors() {
         return authors;
     }
 
     public String getAuthorsString() {
-        return authors.stream().map(author -> author.getId() +"." + author.getName())
+        return authors.stream().map(author -> author.getId() + "." + author.getName())
                 .collect(Collectors.joining(";"));
     }
 
-    public void setAuthors(List<NamedEntity> authors) {
+    public void setAuthors(List<Author> authors) {
         this.authors = authors;
     }
-
-    @Override
-    public String toFileString() {
-        return this.getId() + "," + this.getTitle() + "," + this.getAuthorsString() + ","
-                + this.getPublishYear() + "," + this.getPrice() + "," + this.getQuantity() + "\n";
-    }
-
 }

@@ -1,10 +1,10 @@
 package bookstore.repository.user;
 
 import bookstore.domain.user.User;
-import bookstore.repository.Repository;
+import org.springframework.data.repository.CrudRepository;
 
 import java.util.Collection;
 
-public interface UserRepository extends Repository<String, User> {
+public interface UserRepository extends CrudRepository<User, String> {
     Collection<User> findByName(String name);
 }

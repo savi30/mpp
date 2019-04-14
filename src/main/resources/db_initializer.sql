@@ -19,7 +19,7 @@ create table users
 
 create table store_logs
 (
-  transaction_id   bigint primary key auto_increment,
+  transactionId   bigint primary key auto_increment,
   user_id          varchar(255) not null,
   book_id          varchar(255) not null,
   transaction_date timestamp default current_timestamp on update current_timestamp,

@@ -1,12 +1,19 @@
 package bookstore.service.logs;
 
 import bookstore.domain.logs.LogsEntry;
-import bookstore.repository.Repository;
-import bookstore.service.AbstractCRUDService;
+import bookstore.repository.logs.LogsRepository;
+import bookstore.service.CrudService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-public class LogsService extends AbstractCRUDService<String, LogsEntry> {
+@Component
+public class LogsService extends CrudService<String, LogsEntry> {
 
-    public LogsService(Repository<String, LogsEntry> repository) {
+    private LogsRepository repository;
+
+    @Autowired
+    public LogsService(LogsRepository repository) {
+        super(repository);
         this.repository = repository;
     }
 }
