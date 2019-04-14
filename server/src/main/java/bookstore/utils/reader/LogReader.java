@@ -1,6 +1,6 @@
 package bookstore.utils.reader;
 
-import bookstore.domain.logs.LogsEntry;
+import bookstore.utils.domain.logs.LogsEntry;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

@@ -1,12 +1,12 @@
 package bookstore.repository;
 
-import bookstore.domain.core.Entity;
-import bookstore.repository.paging.Page;
-import bookstore.repository.paging.Pageable;
+import bookstore.utils.domain.core.Entity;
+import bookstore.utils.Page;
+import bookstore.utils.Pageable;
 import bookstore.repository.paging.PagingRepository;
 import bookstore.repository.paging.impl.PagingService;
 import bookstore.utils.validator.Validator;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.exception.ValidationException;
 
 import java.io.Serializable;
 import java.util.*;

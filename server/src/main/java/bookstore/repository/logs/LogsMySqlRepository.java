@@ -1,7 +1,6 @@
 package bookstore.repository.logs;
 
-import bookstore.domain.logs.LogsEntry;
-import bookstore.domain.user.User;
+import bookstore.utils.domain.logs.LogsEntry;
 import bookstore.repository.DBRepository;
 import bookstore.repository.config.MySqlDatabaseConnector;
 import bookstore.utils.builder.SqlQueryBuilder;

@@ -1,6 +1,22 @@
-repositories{
+buildscript {
+    ext {
+        springBootVersion = "2.1.4.RELEASE"
+    }
+
+    repositories {
+        jcenter()
+        mavenCentral()
+    }
+    
+}
+
+repositories {
     mavenCentral()
 }
+
 dependencies {
+    compile project(':commons')
     compile project(':server')
 }
+
+mainClassName = 'bookstore.App'

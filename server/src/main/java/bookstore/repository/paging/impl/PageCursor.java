@@ -1,6 +1,6 @@
 package bookstore.repository.paging.impl;
 
-import bookstore.repository.paging.Pageable;
+import bookstore.utils.Pageable;
 
 public class PageCursor implements Pageable {
     private int pageSize;

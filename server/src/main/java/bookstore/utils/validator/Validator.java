@@ -1,6 +1,6 @@
 package bookstore.utils.validator;
 
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.exception.ValidationException;
 
 /**
  * @author pollos_hermanos.

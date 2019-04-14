@@ -1,9 +1,9 @@
 package bookstore.repository;
 
-import bookstore.domain.core.Entity;
+import bookstore.utils.domain.core.Entity;
 import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.exception.ValidationException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

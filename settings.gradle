@@ -9,4 +9,4 @@
 
 rootProject.name = 'store'
 
-include 'server', 'client'
+include 'server', 'client', 'commons'

@@ -1,12 +1,12 @@
 package bookstore.service.logs;
 
-import bookstore.domain.logs.LogsEntry;
-import bookstore.repository.Repository;
+import bookstore.repository.logs.LogsRepository;
 import bookstore.service.AbstractCRUDService;
+import bookstore.utils.domain.logs.LogsEntry;
 
 public class LogsService extends AbstractCRUDService<String, LogsEntry> {
 
-    public LogsService(Repository<String, LogsEntry> repository) {
+    public LogsService(LogsRepository repository) {
         this.repository = repository;
     }
 }

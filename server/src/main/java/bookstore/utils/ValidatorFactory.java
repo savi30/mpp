@@ -6,9 +6,9 @@ import bookstore.utils.validator.book.BookValidator;
 import bookstore.utils.validator.user.UserValidator;
 
 public class ValidatorFactory {
-    private static final String BOOK_VALIDATOR = "bookstore.domain.book.Book";
-    private static final String USER_VALIDATOR = "bookstore.domain.user.User";
-    private static final String LOGS_VALIDATOR = "bookstore.domain.logs.LogsEntry";
+    private static final String BOOK_VALIDATOR = "bookstore.utils.domain.book.Book";
+    private static final String USER_VALIDATOR = "bookstore.utils.domain.user.User";
+    private static final String LOGS_VALIDATOR = "bookstore.utils.domain.logs.LogsEntry";
 
     public Validator getValidator(Class<?> type) {
         switch (type.getName()) {

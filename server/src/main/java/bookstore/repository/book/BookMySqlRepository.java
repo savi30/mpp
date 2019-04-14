@@ -1,14 +1,14 @@
 package bookstore.repository.book;
 
-import bookstore.domain.book.Book;
-import bookstore.domain.core.Entity;
-import bookstore.domain.core.NamedEntity;
+import bookstore.utils.domain.book.Book;
+import bookstore.utils.domain.core.Entity;
+import bookstore.utils.domain.core.NamedEntity;
 import bookstore.repository.DBRepository;
 import bookstore.repository.config.MySqlDatabaseConnector;
 import bookstore.utils.builder.SqlQueryBuilder;
 import bookstore.utils.mapper.ObjectMapper;
 import bookstore.utils.validator.Validator;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.exception.ValidationException;
 
 import java.sql.*;
 import java.util.*;

@@ -1,13 +1,9 @@
 package bookstore.ui;
 
-import bookstore.Service.ClientService;
-import bookstore.domain.book.Book;
-import bookstore.domain.core.NamedEntity;
-import bookstore.domain.user.User;
-import bookstore.repository.paging.Page;
-import bookstore.repository.paging.impl.PageRequest;
-import bookstore.service.AbstractCRUDService;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.service.ClientServerService;
+import bookstore.utils.domain.book.Book;
+import bookstore.utils.domain.core.NamedEntity;
+import bookstore.utils.domain.user.User;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,10 +18,10 @@ import java.util.stream.Collectors;
  * @author pollos_hermanos.
  */
 public class Console {
-    private ClientService clientService;
+    private ClientServerService service;
 
-    public Console(ClientService clientService) {
-        this.clientService = clientService;
+    public Console(ClientServerService service) {
+        this.service = service;
     }
 
     public void runConsole() {
@@ -52,13 +48,13 @@ public class Console {
                             System.out.println("Wrong parameters, should be: id, name!");
                         } else {
                             User user = new User(items.get(0), items.get(1));
-                            try{
-                                Optional<User> optionalUser = clientService.addUser(user).get();
+                            try {
+                                Optional<User> optionalUser = service.addUser(user).get();
                                 optionalUser.ifPresentOrElse(
                                         opt -> System.out.println("Given id already exists!"),
                                         () -> System.out.println("User added successfully!")
                                 );
-                            }catch (InterruptedException | ExecutionException e){
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
 
@@ -69,13 +65,13 @@ public class Console {
                         System.out.println("Delete user with id:");
                         params = bufferedReader.readLine();
                         try {
-                            try{
-                                Optional<User> optionalUser = clientService.deleteUser(params).get();
+                            try {
+                                Optional<User> optionalUser = service.deleteUser(params).get();
                                 optionalUser.ifPresentOrElse(
                                         opt -> System.out.println("User was deleted!"),
                                         () -> System.out.println("No such user!")
                                 );
-                            }catch (InterruptedException | ExecutionException e){
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
                         } catch (NoSuchElementException e) {
@@ -92,13 +88,13 @@ public class Console {
                             System.out.println("Wrong parameters, should be: id, name!");
                         } else {
                             User user = new User(items.get(0), items.get(1));
-                            try{
-                                Optional<User> optionalUser = clientService.updateUser(user).get();
+                            try {
+                                Optional<User> optionalUser = service.updateUser(user).get();
                                 optionalUser.ifPresentOrElse(
                                         opt -> System.out.println("User updated!"),
                                         () -> System.out.println("No such user!")
                                 );
-                            }catch (InterruptedException | ExecutionException e){
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -112,14 +108,14 @@ public class Console {
                             System.out.println(
                                     "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
                         } else {
-                            try{
+                            try {
                                 Book book = parseBook(items);
-                                Optional<Book> optionalBook = clientService.addBook(book).get();
+                                Optional<Book> optionalBook = service.addBook(book).get();
                                 optionalBook.ifPresentOrElse(
                                         opt -> System.out.println("Stock increased for already existing book!"),
                                         () -> System.out.println("Book added successfully!")
                                 );
-                            }catch (InterruptedException | ExecutionException e){
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -133,14 +129,14 @@ public class Console {
                             System.out.println(
                                     "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
                         } else {
-                            try{
+                            try {
                                 Book book = parseBook(items);
-                                Optional<Book> optionalBook = clientService.updateBook(book).get();
+                                Optional<Book> optionalBook = service.updateBook(book).get();
                                 optionalBook.ifPresentOrElse(
                                         opt -> System.out.println("Book updated!"),
                                         () -> System.out.println("No such book!")
                                 );
-                            }catch (InterruptedException | ExecutionException e){
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
                         }
@@ -149,13 +145,13 @@ public class Console {
                     case "deleteBook": {
                         System.out.println("Delete book with id:");
                         params = bufferedReader.readLine();
-                        try{
-                            Optional<Book> optionalUser = clientService.deleteBook(params).get();
+                        try {
+                            Optional<Book> optionalUser = service.deleteBook(params).get();
                             optionalUser.ifPresentOrElse(
                                     opt -> System.out.println("Book was deleted!"),
                                     () -> System.out.println("No such book!")
                             );
-                        }catch (InterruptedException | ExecutionException e){
+                        } catch (InterruptedException | ExecutionException e) {
                             e.printStackTrace();
                         }
                         break;
@@ -188,10 +184,10 @@ public class Console {
                             System.out.println("Wrong parameters, should be: bookId, userId!");
                         } else {
                             try {
-                                Optional<Book> optional = clientService.buyBook(items.get(0), items.get(1)).get();
-                                optional.ifPresentOrElse( opt -> System.out.println("Buy was successful!"),
-                                        ()-> System.out.println("Book not in stock!"));
-                            }catch (InterruptedException | ExecutionException e){
+                                Optional<Book> optional = service.buyBook(items.get(0), items.get(1)).get();
+                                optional.ifPresentOrElse(opt -> System.out.println("Buy was successful!"),
+                                        () -> System.out.println("Book not in stock!"));
+                            } catch (InterruptedException | ExecutionException e) {
                                 e.printStackTrace();
                             }
 
@@ -256,8 +252,8 @@ public class Console {
         }
     }
 
-    private void printAllBooks(){
-        Future<List<Book>> result = clientService.getBooks();
+    private void printAllBooks() {
+        Future<List<Book>> result = service.getBooks();
 
         try {
             result.get().forEach(System.out::println);
@@ -267,8 +263,8 @@ public class Console {
         }
     }
 
-    private void printAllUsers(){
-        Future<List<User>> result = clientService.getUsers();
+    private void printAllUsers() {
+        Future<List<User>> result = service.getUsers();
 
         try {
             result.get().forEach(System.out::println);
@@ -278,7 +274,7 @@ public class Console {
         }
     }
 
-    private void printAllEntitiesWithPaging(AbstractCRUDService service) {
+    /*private void printAllEntitiesWithPaging(AbstractCRUDService service) {
         System.out.println("Input page size:");
         Scanner scanner = new Scanner(System.in);
         PageRequest pageRequest = new PageRequest(0,scanner.nextInt());
@@ -301,7 +297,7 @@ public class Console {
             entities.getContent().forEach(System.out::println);
             entities.nextPageable();
         }
-    }
+    }*/
 
     private Book parseBook(List<String> items) throws IllegalArgumentException {
         Book book = new Book(items.get(0), items.get(1));

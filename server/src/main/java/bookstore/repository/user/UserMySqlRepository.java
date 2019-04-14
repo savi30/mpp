@@ -1,8 +1,7 @@
 package bookstore.repository.user;
 
 
-import bookstore.domain.book.Book;
-import bookstore.domain.user.User;
+import bookstore.utils.domain.user.User;
 import bookstore.repository.DBRepository;
 import bookstore.repository.config.MySqlDatabaseConnector;
 import bookstore.utils.builder.SqlQueryBuilder;

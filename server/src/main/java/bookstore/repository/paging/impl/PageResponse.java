@@ -1,7 +1,7 @@
 package bookstore.repository.paging.impl;
 
-import bookstore.repository.paging.Page;
-import bookstore.repository.paging.Pageable;
+import bookstore.utils.Page;
+import bookstore.utils.Pageable;
 
 import java.util.Collection;
 import java.util.stream.Stream;

@@ -1,9 +1,7 @@
 package bookstore.service;
 
-import bookstore.domain.book.Book;
-import bookstore.domain.user.User;
-import bookstore.utils.validator.exception.ValidationException;
-import org.checkerframework.checker.nullness.Opt;
+import bookstore.utils.domain.book.Book;
+import bookstore.utils.domain.user.User;
 
 import java.util.List;
 import java.util.Optional;

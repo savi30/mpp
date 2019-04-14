@@ -1,6 +1,6 @@
-package bookstore.domain.user;
+package bookstore.utils.domain.user;
 
-import bookstore.domain.core.NamedEntity;
+import bookstore.utils.domain.core.NamedEntity;
 
 /**
  * @author pollos_hermanos.

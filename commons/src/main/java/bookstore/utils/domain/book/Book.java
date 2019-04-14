@@ -1,6 +1,6 @@
-package bookstore.domain.book;
+package bookstore.utils.domain.book;
 
-import bookstore.domain.core.NamedEntity;
+import bookstore.utils.domain.core.NamedEntity;
 
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -71,7 +71,7 @@ public class Book extends NamedEntity<String> {
     }
 
     public String getAuthorsString() {
-        return authors.stream().map(author -> author.getId() +"." + author.getName())
+        return authors.stream().map(author -> author.getId() + "." + author.getName())
                 .collect(Collectors.joining(";"));
     }
 

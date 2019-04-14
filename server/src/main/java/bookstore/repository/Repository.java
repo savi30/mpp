@@ -1,9 +1,9 @@
 package bookstore.repository;
 
-import bookstore.domain.core.Entity;
-import bookstore.repository.paging.Page;
-import bookstore.repository.paging.Pageable;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.Page;
+import bookstore.utils.Pageable;
+import bookstore.utils.domain.core.Entity;
+import bookstore.utils.exception.ValidationException;
 
 import java.util.Collection;
 import java.util.Optional;

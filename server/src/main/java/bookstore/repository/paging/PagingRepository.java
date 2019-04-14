@@ -1,7 +1,9 @@
 package bookstore.repository.paging;
 
-import bookstore.domain.core.Entity;
+import bookstore.utils.domain.core.Entity;
 import bookstore.repository.Repository;
+import bookstore.utils.Page;
+import bookstore.utils.Pageable;
 
 import java.io.Serializable;
 

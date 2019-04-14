@@ -1,9 +1,9 @@
 package bookstore.repository;
 
-import bookstore.domain.core.Entity;
+import bookstore.utils.domain.core.Entity;
 import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.exception.ValidationException;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

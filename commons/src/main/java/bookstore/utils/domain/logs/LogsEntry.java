@@ -1,6 +1,6 @@
-package bookstore.domain.logs;
+package bookstore.utils.domain.logs;
 
-import bookstore.domain.core.NamedEntity;
+import bookstore.utils.domain.core.NamedEntity;
 
 import java.sql.Timestamp;
 

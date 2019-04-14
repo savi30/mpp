@@ -14,7 +14,9 @@ public class SqlQueryBuilder {
     }
 
     public SqlQueryBuilder where(String value) {
-        this.query += " WHERE " + value;
+        if (value != null && !value.isEmpty()) {
+            this.query += " WHERE " + value;
+        }
         return this;
     }
 

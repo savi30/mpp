@@ -6,9 +6,9 @@ import bookstore.utils.reader.Reader;
 import bookstore.utils.reader.UserReader;
 
 public class ReaderFactory {
-    private static final String BOOK_READER = "bookstore.domain.book.Book";
-    private static final String USER_READER = "bookstore.domain.user.User";
-    private static final String LOGS_READER = "bookstore.domain.logs.LogsEntry";
+    private static final String BOOK_READER = "bookstore.utils.domain.book.Book";
+    private static final String USER_READER = "bookstore.utils.domain.user.User";
+    private static final String LOGS_READER = "bookstore.utils.domain.logs.LogsEntry";
 
     public Reader getBuilder(Class<?> type) {
         switch (type.getName()) {

@@ -1,14 +1,14 @@
 package bookstore.service.user;
 
-import bookstore.domain.user.User;
-import bookstore.repository.Repository;
 import bookstore.repository.user.UserRepository;
 import bookstore.service.AbstractCRUDService;
+import bookstore.utils.domain.user.User;
+import bookstore.utils.service.UserService;
 
 import java.util.Collection;
 
-public class UserService extends AbstractCRUDService<String, User> {
-    public UserService(Repository<String, User> repository) {
+public class UserServiceImpl extends AbstractCRUDService<String, User> implements UserService {
+    public UserServiceImpl(UserRepository repository) {
         this.repository = repository;
     }
 

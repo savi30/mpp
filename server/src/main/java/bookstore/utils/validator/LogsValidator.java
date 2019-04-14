@@ -1,10 +1,13 @@
 package bookstore.utils.validator;
 
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.domain.logs.LogsEntry;
+import bookstore.utils.exception.ValidationException;
+import org.springframework.stereotype.Component;
 
-public class LogsValidator implements Validator {
+@Component
+public class LogsValidator implements Validator<LogsEntry> {
     @Override
-    public void validate(Object entity) throws ValidationException {
+    public void validate(LogsEntry entity) throws ValidationException {
 
     }
 }

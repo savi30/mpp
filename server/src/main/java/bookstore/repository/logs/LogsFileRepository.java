@@ -1,6 +1,6 @@
 package bookstore.repository.logs;
 
-import bookstore.domain.logs.LogsEntry;
+import bookstore.utils.domain.logs.LogsEntry;
 import bookstore.repository.FileRepository;
 import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;

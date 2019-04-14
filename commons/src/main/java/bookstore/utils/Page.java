@@ -1,4 +1,4 @@
-package bookstore.repository.paging;
+package bookstore.utils;
 
 import java.util.stream.Stream;
 

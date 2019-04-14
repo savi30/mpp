@@ -1,4 +1,4 @@
-package bookstore.domain.core;
+package bookstore.utils.domain.core;
 
 import java.io.Serializable;
 

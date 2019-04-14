@@ -1,16 +1,43 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
-
     }
-    dependencies{
-        classpath 'mysql:mysql-connector-java:8.0.15'
+    ext {
+        springBootVersion = "2.1.4.RELEASE"
+        springVersion = "5.1.6.RELEASE"
+        mySqlVersion = "8.0.15"
+        guavaVersion = "27.0.1-jre"
+    }
+
+    dependencies {
+        classpath "org.springframework:spring-core:${springVersion}"
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
     }
 }
-repositories{
+
+repositories {
     mavenCentral()
 }
-dependencies {
-    implementation 'mysql:mysql-connector-java:8.0.15'
+
+configurations.all { configuration ->
+    configuration.incoming.beforeResolve { resolvableDependencies ->
+        resolvableDependencies.dependencies.each { dependency ->
+            dependency.exclude module: 'spring-boot-starter-tomcat'
+        }
+    }
 }
 
+dependencies {
+    compile project(':commons')
+
+    compile ("org.springframework.boot:spring-boot-starter-web:${springBootVersion}")
+    compile "com.google.guava:guava:${guavaVersion}"
+    compile "mysql:mysql-connector-java:${mySqlVersion}"
+    compile "org.springframework:spring-context:${springVersion}"
+    compile "org.springframework:spring-context-support:${springVersion}"
+    compile "org.springframework:spring-jdbc:${springVersion}"
+    compile "org.springframework:spring-tx:${springVersion}"
+}
+
+mainClassName = 'bookstore.App'

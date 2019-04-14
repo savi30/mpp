@@ -1,4 +1,4 @@
-package bookstore.utils.validator.exception;
+package bookstore.utils.exception;
 
 /**
  * @author pollos_hermanos.

@@ -1,10 +1,7 @@
 package bookstore.utils;
 
 import bookstore.repository.Repository;
-import bookstore.repository.book.BookFileRepository;
-import bookstore.repository.book.BookInMemoryRepository;
-import bookstore.repository.book.BookMySqlRepository;
-import bookstore.repository.book.BookXMLRepository;
+import bookstore.repository.book.*;
 import bookstore.repository.logs.LogsFileRepository;
 import bookstore.repository.logs.LogsInMemoryRepository;
 import bookstore.repository.logs.LogsMySqlRepository;
@@ -23,9 +20,9 @@ public class RepositoryFactory {
     private final static String XML_REPOSITORY = "bookstore.repository.LogsXMLRepository";
     private final static String DB_REPOSITORY = "bookstore.repository.DBRepository";
 
-    private static final String BOOK = "bookstore.domain.book.Book";
-    private static final String USER = "bookstore.domain.user.User";
-    private static final String LOGS = "bookstore.domain.logs.LogsEntry";
+    private static final String BOOK = "bookstore.utils.domain.book.Book";
+    private static final String USER = "bookstore.utils.domain.user.User";
+    private static final String LOGS = "bookstore.utils.domain.logs.LogsEntry";
 
     public Repository getRepository(Class<?> objectType) {
         ValidatorFactory validatorFactory = new ValidatorFactory();
@@ -71,7 +68,7 @@ public class RepositoryFactory {
 
         switch (objectType.getName()) {
             case BOOK:
-                return new BookMySqlRepository(validator);
+                return null;
             case USER:
                 return new UserMySqlRepository(validator);
             case LOGS:

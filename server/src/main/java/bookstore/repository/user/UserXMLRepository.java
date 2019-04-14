@@ -1,6 +1,6 @@
 package bookstore.repository.user;
 
-import bookstore.domain.user.User;
+import bookstore.utils.domain.user.User;
 import bookstore.repository.XMLRepository;
 import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;

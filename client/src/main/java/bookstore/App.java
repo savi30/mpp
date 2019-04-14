@@ -1,9 +1,15 @@
 package bookstore;
 
 
-import bookstore.Service.ClientService;
-import bookstore.tcp.TcpClient;
+import bookstore.config.ApplicationConfig;
+import bookstore.service.ClientServerService;
+import bookstore.service.ClientService;
 import bookstore.ui.Console;
+import bookstore.utils.service.BookService;
+import bookstore.utils.service.ReportService;
+import bookstore.utils.service.UserService;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -15,15 +21,20 @@ public class App {
         ExecutorService executorService =
                 Executors.newFixedThreadPool(
                         Runtime.getRuntime().availableProcessors());
-        TcpClient tcpClient = new TcpClient(ClientService.SERVER_HOST,
-                ClientService.SERVER_PORT);
-        ClientService clientService =
-                new ClientService(executorService, tcpClient);
 
-        Console console = new Console(clientService);
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
+        UserService userService = context.getBean(UserService.class);
+        ReportService reportService = context.getBean(ReportService.class);
+        BookService bookService = context.getBean(BookService.class);
+
+        ClientServerService service = new ClientService(bookService, userService, reportService);
+
+        Console console = new Console(service);
         console.runConsole();
 
         executorService.shutdownNow();
+
+        System.out.println("client - bye");
 
         System.out.println("client - bye");
     }

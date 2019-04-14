@@ -1,4 +1,4 @@
-package bookstore.domain.core;
+package bookstore.utils.domain.core;
 
 /**
  * Generic class for an Entity with an ID and a name.

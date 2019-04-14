@@ -1,10 +1,10 @@
 package bookstore.repository.book;
 
-import bookstore.domain.book.Book;
+import bookstore.utils.domain.book.Book;
 import bookstore.repository.XMLRepository;
 import bookstore.utils.reader.Reader;
 import bookstore.utils.validator.Validator;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.exception.ValidationException;
 
 import java.sql.Timestamp;
 import java.util.Collection;

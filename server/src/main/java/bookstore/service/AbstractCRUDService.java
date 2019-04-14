@@ -1,10 +1,11 @@
 package bookstore.service;
 
-import bookstore.domain.core.Entity;
 import bookstore.repository.Repository;
-import bookstore.repository.paging.Page;
-import bookstore.repository.paging.Pageable;
-import bookstore.utils.validator.exception.ValidationException;
+import bookstore.utils.Page;
+import bookstore.utils.Pageable;
+import bookstore.utils.domain.core.Entity;
+import bookstore.utils.exception.ValidationException;
+import bookstore.utils.service.CRUDService;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +15,7 @@ import java.util.Optional;
 /**
  * @author pollos_hermanos.
  */
-public class AbstractCRUDService<ID, T extends Entity<ID>> {
+public class AbstractCRUDService<ID, T extends Entity<ID>> implements CRUDService<ID, T> {
     protected Repository<ID, T> repository;
 
     public T findById(ID id) {
@@ -22,7 +23,7 @@ public class AbstractCRUDService<ID, T extends Entity<ID>> {
         return entity.get();
     }
 
-    public Page<T> findAll(Pageable pageable){
+    public Page<T> findAll(Pageable pageable) {
         return repository.findAll(pageable);
     }
 

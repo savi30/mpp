@@ -1,21 +1,24 @@
 package bookstore.service.report;
 
-import bookstore.domain.logs.LogsEntry;
-import bookstore.domain.user.User;
-import bookstore.service.book.BookService;
+import bookstore.service.book.BookServiceImpl;
 import bookstore.service.logs.LogsService;
-import bookstore.service.user.UserService;
+import bookstore.service.user.UserServiceImpl;
+import bookstore.utils.domain.logs.LogsEntry;
+import bookstore.utils.domain.user.User;
+import bookstore.utils.service.BookService;
+import bookstore.utils.service.ReportService;
+import bookstore.utils.service.UserService;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ReportService {
+public class ReportServiceImpl implements ReportService {
 
     private BookService bookService;
     private UserService userService;
     private LogsService logsService;
 
-    public ReportService(BookService bookService, UserService userService, LogsService logsService) {
+    public ReportServiceImpl(BookService bookService, UserService userService, LogsService logsService) {
         this.bookService = bookService;
         this.userService = userService;
         this.logsService = logsService;
@@ -47,7 +50,7 @@ public class ReportService {
         return userService.findById(userId[0]);
     }
 
-    public void setBookService(BookService bookService) {
+    public void setBookService(BookServiceImpl bookService) {
         this.bookService = bookService;
     }
 
@@ -55,7 +58,7 @@ public class ReportService {
         return userService;
     }
 
-    public void setUserService(UserService userService) {
+    public void setUserService(UserServiceImpl userService) {
         this.userService = userService;
     }
 

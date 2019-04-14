@@ -1,7 +1,7 @@
 package bookstore.utils.reader;
 
-import bookstore.domain.book.Book;
-import bookstore.domain.core.NamedEntity;
+import bookstore.utils.domain.book.Book;
+import bookstore.utils.domain.core.NamedEntity;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;

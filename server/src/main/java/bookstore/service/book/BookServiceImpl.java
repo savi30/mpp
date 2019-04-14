@@ -1,9 +1,12 @@
 package bookstore.service.book;
 
-import bookstore.domain.book.Book;
 import bookstore.repository.Repository;
 import bookstore.repository.book.BookRepository;
 import bookstore.service.AbstractCRUDService;
+import bookstore.utils.domain.book.Book;
+import bookstore.utils.exception.ValidationException;
+import bookstore.utils.service.BookService;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -13,10 +16,22 @@ import java.util.Optional;
 /**
  * @author pollos_hermanos.
  */
-public class BookService extends AbstractCRUDService<String, Book> {
+public class BookServiceImpl extends AbstractCRUDService<String, Book> implements BookService {
 
-    public BookService(Repository<String, Book> repository) {
-        this.repository = repository;
+    public BookServiceImpl(BookRepository repository) {
+        this.repository = (Repository<String, Book>) repository;
+    }
+
+    @Transactional
+    @Override
+    public Optional<Book> update(Book entity) throws ValidationException {
+        return super.update(entity);
+    }
+
+    @Transactional
+    @Override
+    public Optional<Book> save(Book entity) throws ValidationException {
+        return super.save(entity);
     }
 
     /**
@@ -26,6 +41,7 @@ public class BookService extends AbstractCRUDService<String, Book> {
      * @param clientId - id of the client who buys
      * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
      */
+    @Transactional
     public Optional<Book> buy(String bookId, String clientId) {
         return ((BookRepository) repository).buy(bookId, clientId);
     }
