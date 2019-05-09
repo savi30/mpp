@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -48,7 +47,7 @@ public class BookService extends CrudService<String, Book> {
      */
     public Collection<Book> filterBooksByTitle(String s) {
         log.trace("filterBooksByTitle --- method entered");
-        Collection<Book> result =  repository.findByTitle(s);
+        Collection<Book> result = repository.findByTitle(s);
         log.trace("filterBooksByTitle: result={}", result);
         return result;
     }

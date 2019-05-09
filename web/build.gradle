@@ -1,0 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile project(':core')
+    compile group: 'org.springframework', name: 'spring-webmvc', version: "4.1.6.RELEASE"
+}
+
+mainClassName = ''
