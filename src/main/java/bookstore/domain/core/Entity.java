@@ -1,7 +1,5 @@
 package bookstore.domain.core;
 
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 
@@ -13,7 +11,6 @@ import javax.persistence.MappedSuperclass;
 @MappedSuperclass
 public class Entity<ID> {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private ID id;
 
     public Entity() {

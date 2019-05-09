@@ -19,7 +19,7 @@ create table users
 
 create table store_logs
 (
-  transactionId   bigint primary key auto_increment,
+  transaction_id   bigint primary key auto_increment,
   user_id          varchar(255) not null,
   book_id          varchar(255) not null,
   transaction_date timestamp default current_timestamp on update current_timestamp,
@@ -34,7 +34,7 @@ create table authors_books
   foreign key (book_id) references books (id) on delete cascade,
   primary key (author_id, book_id)
 );
-insert into users(id, username)
+insert into users(id, name)
 values ("1", "rocky"),
        ("2", "archer"),
        ("3", "jerry"),

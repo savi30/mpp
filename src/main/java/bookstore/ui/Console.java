@@ -163,14 +163,25 @@ public class Console {
                     case "filterBooksByQuantity": {
                         System.out.println("Filter book by quantity:");
                         params = bufferedReader.readLine();
-                        bookService.filterBooksByQuantity(Integer.valueOf(params)).forEach(System.out::println);
+                        Collection<Book> books = bookService.filterBooksByQuantity(Integer.valueOf(params));
+                        if(books.size() == 0){
+                            System.out.println("No match was found!");
+                        }
+                        else{
+                            books.forEach(System.out::println);
+                        }
                         break;
                     }
                     case "filterBooksByAuthor": {
                         System.out.println("Filter books by author:");
                         params = bufferedReader.readLine();
-                        bookService.filterBooksByAuthor(params).forEach(System.out::println);
-                        break;
+                        Collection<Book> books = bookService.filterBooksByAuthor(params);
+                        if(books.size() == 0){
+                            System.out.println("No match was found!");
+                        }
+                        else{
+                            books.forEach(System.out::println);
+                        }                        break;
                     }
                     case "filterBooksByDate": {
                         System.out.println("Filter books by date {start date, end date}");
@@ -179,8 +190,14 @@ public class Console {
                         if (items.size() != 2) {
                             System.out.println("Wrong parameters, should be {start date, end date}");
                         } else {
-                            bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
-                                    Timestamp.valueOf(items.get(1))).forEach(System.out::println);
+                            Collection<Book> books = bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
+                                    Timestamp.valueOf(items.get(1)));
+                            if(books.size() == 0){
+                                System.out.println("No match was found!");
+                            }
+                            else{
+                                books.forEach(System.out::println);
+                            }
                         }
                         break;
                     }
@@ -191,15 +208,27 @@ public class Console {
                         if (items.size() != 2) {
                             System.out.println("Wrong parameteres, should be {min price, max price}");
                         } else {
-                            bookService.filterBooksByPrice(Double.valueOf(items.get(0)), Double.valueOf(items.get(1)))
-                                    .forEach(System.out::println);
+                            Collection<Book> books = bookService.filterBooksByPrice(Double.valueOf(items.get(0)),
+                                    Double.valueOf(items.get(1)));
+                            if(books.size() == 0){
+                                System.out.println("No match was found!");
+                            }
+                            else{
+                                books.forEach(System.out::println);
+                            }
                         }
                         break;
                     }
                     case "filterUsersByName": {
                         System.out.println("Filter users by name:");
                         params = bufferedReader.readLine();
-                        userService.filterUsersByName(params).forEach(System.out::println);
+                        Collection<User> users = userService.filterUsersByName(params);
+                        if(users.size() == 0){
+                            System.out.println("No match was found!");
+                        }
+                        else{
+                            users.forEach(System.out::println);
+                        }
                         break;
                     }
                     default:
@@ -251,7 +280,7 @@ public class Console {
         Book book = new Book(items.get(0), items.get(1));
         List<String> authors = Arrays.asList(items.get(2).split(";"));
         List<String[]> arg = new ArrayList<>();
-        authors.forEach(a -> arg.add(a.split("-")));
+        authors.forEach(a -> arg.add(a.split("\\.")));
         book.setAuthors(arg.stream()
                 .map(a -> new Author(a[0], a[1]))
                 .collect(Collectors.toList()));
@@ -274,9 +303,9 @@ public class Console {
         System.out.println("\tdeleteBook");
         System.out.println("\tupdateBook");
         System.out.println("\tprintBooks");
-        System.out.println("\tprintBooksWithPaging");
+        //System.out.println("\tprintBooksWithPaging");
         System.out.println("\tprintUsers");
-        System.out.println("\tprintUsersWithPaging");
+        //System.out.println("\tprintUsersWithPaging");
         System.out.println("\tbuyBook");
         System.out.println("\tfilterBooksByTitle");
         System.out.println("\tfilterBooksByQuantity");
