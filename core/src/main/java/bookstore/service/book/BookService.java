@@ -1,16 +1,18 @@
 package bookstore.service.book;
 
 import bookstore.domain.book.Book;
+import bookstore.domain.logs.LogsEntry;
 import bookstore.repository.book.BookRepository;
+import bookstore.repository.logs.LogsRepository;
 import bookstore.service.CrudService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.sql.Timestamp;
 import java.util.Collection;
-import java.util.List;
 import java.util.Optional;
 
 
@@ -20,6 +22,8 @@ import java.util.Optional;
 @Component
 public class BookService extends CrudService<String, Book> {
     private BookRepository repository;
+    @Autowired
+    private LogsRepository logsRepository;
     private static final Logger log = LoggerFactory.getLogger(
             BookService.class);
 
@@ -36,9 +40,11 @@ public class BookService extends CrudService<String, Book> {
      * @param clientId - id of the client who buys
      * @return an {@code Optional} encapsulating the bought book or empty if no such book is in stock.
      */
+    @Transactional
     public Optional<Book> buy(String bookId, String clientId) {
-        //return repository.buy(bookId, clientId);
-        return Optional.empty();
+        repository.buy(bookId);
+        logsRepository.save(new LogsEntry(clientId, bookId, null));
+        return repository.findById(bookId);
     }
 
     /**
@@ -48,7 +54,7 @@ public class BookService extends CrudService<String, Book> {
      */
     public Collection<Book> filterBooksByTitle(String s) {
         log.trace("filterBooksByTitle --- method entered");
-        Collection<Book> result =  repository.findByTitle(s);
+        Collection<Book> result = repository.findByTitle(s);
         log.trace("filterBooksByTitle: result={}", result);
         return result;
     }

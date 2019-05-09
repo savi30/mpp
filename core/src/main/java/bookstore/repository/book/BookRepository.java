@@ -1,7 +1,10 @@
 package bookstore.repository.book;
 
 import bookstore.domain.book.Book;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.query.Param;
 
 import java.sql.Timestamp;
 import java.util.Collection;
@@ -11,7 +14,9 @@ import java.util.Collection;
  */
 public interface BookRepository extends CrudRepository<Book, String> {
 
-    //Optional<Book> buy(String bookId, String clientId);
+    @Modifying
+    @Query("update #{#entityName} book set book.quantity = (book.quantity - 1) where book.id = :bookId and book.quantity > 0")
+    void buy(@Param("bookId") String bookId);
 
     Collection<Book> findByAuthors(String author);
 
