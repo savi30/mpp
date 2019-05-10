@@ -3,11 +3,13 @@ package bookstore.ui;
 import bookstore.domain.book.Book;
 import bookstore.domain.user.Author;
 import bookstore.domain.user.User;
-import bookstore.service.book.BookService;
-import bookstore.service.report.ReportService;
-import bookstore.service.user.UserService;
+import com.fasterxml.jackson.databind.JavaType;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,16 +23,13 @@ import java.util.stream.Collectors;
  */
 @Component
 public class Console {
-    private BookService bookService;
-    private UserService userService;
-    private ReportService reportService;
+    private RestTemplate restTemplate;
+    String url;
 
     @Autowired
-    public Console(BookService bookService, UserService userService,
-                   ReportService reportService) {
-        this.bookService = bookService;
-        this.userService = userService;
-        this.reportService = reportService;
+    public Console(RestTemplate restTemplate) {
+        this.restTemplate = restTemplate;
+        this.url = "http://localhost:8080/book_store/";
     }
 
     public void runConsole() {
@@ -52,20 +51,14 @@ public class Console {
                     case "addUser": {
                         System.out.println("Add user {id, Name}");
                         params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 2) {
-                            System.out.println("Wrong parameters, should be: id, name!");
-                        } else {
-                            User user = new User(items.get(0), items.get(1));
-                            userService.save(user);
-                        }
+                        postUser(params);
                         break;
                     }
                     case "deleteUser": {
                         System.out.println("Delete user with id:");
                         params = bufferedReader.readLine();
                         try {
-                            userService.delete(params);
+                            restTemplate.delete(url + "users/" + params);
                         } catch (NoSuchElementException e) {
                             e.printStackTrace();
                         }
@@ -75,47 +68,26 @@ public class Console {
                     case "updateUser": {
                         System.out.println("Update user {id, Name}");
                         params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 2) {
-                            System.out.println("Wrong parameters, should be: id, name!");
-                        } else {
-                            User user = new User(items.get(0), items.get(1));
-                            userService.update(user);
-
-                        }
+                        postUser(params);
                         break;
                     }
                     case "addBook": {
                         System.out.println("Add Book {id, Title, author_id.AuthorName, timestamp, price, quantity}");
                         params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 6) {
-                            System.out.println(
-                                    "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
-                        } else {
-                            Book book = parseBook(items);
-                            bookService.save(book);
-                        }
+                        postBook(params);
                         break;
                     }
                     case "updateBook": {
                         System.out.println("Update Book {id, Title, author_id.AuthorName, timestamp, price, quantity}");
                         params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 6) {
-                            System.out.println(
-                                    "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
-                        } else {
-                            Book book = parseBook(items);
-                            bookService.update(book);
-                        }
+                        postBook(params);
                         break;
                     }
                     case "deleteBook": {
                         System.out.println("Delete book with id:");
                         params = bufferedReader.readLine();
                         try {
-                            bookService.delete(params);
+                            restTemplate.delete(url + "books/" + params);
                         } catch (NoSuchElementException e) {
                             e.printStackTrace();
                         }
@@ -136,34 +108,49 @@ public class Console {
                         //printAllEntitiesWithPaging(bookService);
                         break;
                     case "mostActive":
-                        System.out.println(reportService.getMostActiveCustomer());
+                        int a;
+                        ResponseEntity<User> response
+                                = restTemplate.getForEntity(url + "users/mostActive", User.class);
+                        System.out.println(response.getBody());
                         break;
                     case "biggestSpender":
-                        System.out.println(reportService.getCustomerWhoSpentMost());
+                        ResponseEntity<User> responseBiggestSpender
+                                = restTemplate.getForEntity(url + "users/biggestSpender", User.class);
+                        System.out.println(responseBiggestSpender.getBody());
                         break;
-                    case "buyBook": {
-                        System.out.println("Buy book {bookId, userId}");
-                        params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 2) {
-                            System.out.println("Wrong parameters, should be: bookId, userId!");
-                        } else {
-                            Optional<Book> optional = bookService.buy(items.get(0), items.get(1));
-                            optional.ifPresentOrElse(opt -> System.out.println("Buy was successful!"),
-                                    () -> System.out.println("Book not in stock!"));
-                        }
-                        break;
-                    }
+//                    case "buyBook": {
+//                        System.out.println("Buy book {bookId, userId}");
+//                        params = bufferedReader.readLine();
+//                        List<String> items = Arrays.asList(params.split(","));
+//                        if (items.size() != 2) {
+//                            System.out.println("Wrong parameters, should be: bookId, userId!");
+//                        } else {
+//                            Optional<Book> optional = bookService.buy(items.get(0), items.get(1));
+//                            optional.ifPresentOrElse(opt -> System.out.println("Buy was successful!"),
+//                                    () -> System.out.println("Book not in stock!"));
+//                        }
+//                        break;
+//                    }
                     case "filterBooksByTitle": {
                         System.out.println("Filter book by title:");
                         params = bufferedReader.readLine();
-                        bookService.filterBooksByTitle(params).forEach(System.out::println);
+                        ResponseEntity<List> responseFilterTitle
+                                = restTemplate.getForEntity(url + "books/title/" + params, List.class);
+                        List<Book> books = (List<Book>) responseFilterTitle.getBody();
+                        if(books.size() == 0){
+                            System.out.println("No match was found!");
+                        }
+                        else{
+                            books.forEach(System.out::println);
+                        }
                         break;
                     }
                     case "filterBooksByQuantity": {
                         System.out.println("Filter book by quantity:");
                         params = bufferedReader.readLine();
-                        Collection<Book> books = bookService.filterBooksByQuantity(Integer.valueOf(params));
+                        ResponseEntity<List> responseFilterQuantity
+                                = restTemplate.getForEntity(url + "books/quantity/" + params, List.class);
+                        List<Book> books = (List<Book>) responseFilterQuantity.getBody();
                         if(books.size() == 0){
                             System.out.println("No match was found!");
                         }
@@ -175,32 +162,34 @@ public class Console {
                     case "filterBooksByAuthor": {
                         System.out.println("Filter books by author:");
                         params = bufferedReader.readLine();
-                        Collection<Book> books = bookService.filterBooksByAuthor(params);
-                        if(books.size() == 0){
+                        ResponseEntity<List> responseFilterAuthor
+                                = restTemplate.getForEntity(url + "books/author/" + params, List.class);
+                        List<Book> books = (List<Book>) responseFilterAuthor.getBody();
+                        if (books.size() == 0) {
                             System.out.println("No match was found!");
-                        }
-                        else{
-                            books.forEach(System.out::println);
-                        }                        break;
-                    }
-                    case "filterBooksByDate": {
-                        System.out.println("Filter books by date {start date, end date}");
-                        params = bufferedReader.readLine();
-                        List<String> items = Arrays.asList(params.split(","));
-                        if (items.size() != 2) {
-                            System.out.println("Wrong parameters, should be {start date, end date}");
                         } else {
-                            Collection<Book> books = bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
-                                    Timestamp.valueOf(items.get(1)));
-                            if(books.size() == 0){
-                                System.out.println("No match was found!");
-                            }
-                            else{
-                                books.forEach(System.out::println);
-                            }
+                            books.forEach(System.out::println);
                         }
                         break;
                     }
+//                    case "filterBooksByDate": {
+//                        System.out.println("Filter books by date {start date, end date}");
+//                        params = bufferedReader.readLine();
+//                        List<String> items = Arrays.asList(params.split(","));
+//                        if (items.size() != 2) {
+//                            System.out.println("Wrong parameters, should be {start date, end date}");
+//                        } else {
+//                            Collection<Book> books = bookService.filterBooksByDate(Timestamp.valueOf(items.get(0)),
+//                                    Timestamp.valueOf(items.get(1)));
+//                            if(books.size() == 0){
+//                                System.out.println("No match was found!");
+//                            }
+//                            else{
+//                                books.forEach(System.out::println);
+//                            }
+//                        }
+//                        break;
+//                    }
                     case "filterBooksByPrice": {
                         System.out.println("Filter books by price {min price, max price}");
                         params = bufferedReader.readLine();
@@ -208,8 +197,9 @@ public class Console {
                         if (items.size() != 2) {
                             System.out.println("Wrong parameteres, should be {min price, max price}");
                         } else {
-                            Collection<Book> books = bookService.filterBooksByPrice(Double.valueOf(items.get(0)),
-                                    Double.valueOf(items.get(1)));
+                            ResponseEntity<Book[]> responseFilterPrice
+                                    = restTemplate.getForEntity(url + "books/price/" + params, Book[].class);
+                            List<Book> books = Arrays.asList(responseFilterPrice.getBody());
                             if(books.size() == 0){
                                 System.out.println("No match was found!");
                             }
@@ -222,7 +212,9 @@ public class Console {
                     case "filterUsersByName": {
                         System.out.println("Filter users by name:");
                         params = bufferedReader.readLine();
-                        Collection<User> users = userService.filterUsersByName(params);
+                        ResponseEntity<User[]> responseFilterName
+                                = restTemplate.getForEntity(url + "users/username/" + params, User[].class);
+                        List<User> users = Arrays.asList(responseFilterName.getBody());
                         if(users.size() == 0){
                             System.out.println("No match was found!");
                         }
@@ -242,13 +234,41 @@ public class Console {
     }
 
     private void printAllBooks() {
-        List<Book> books = (List<Book>) bookService.findAll();
+        ResponseEntity<Book[]> response
+                = restTemplate.getForEntity(url + "books", Book[].class);
+        List<Book> books = Arrays.asList(response.getBody());
         books.forEach(System.out::println);
     }
 
     private void printAllUsers() {
-        List<User> users = (List<User>) userService.findAll();
+        ResponseEntity<User[]> response
+                = restTemplate.getForEntity(url + "users", User[].class);
+        List<User> users = Arrays.asList(response.getBody());
         users.forEach(System.out::println);
+    }
+
+    private void postUser(String params){
+        List<String> items = Arrays.asList(params.split(","));
+        if (items.size() != 2) {
+            System.out.println("Wrong parameters, should be: id, name!");
+        } else {
+            User user = new User(items.get(0), items.get(1));
+            HttpEntity<User> request = new HttpEntity<>(user);
+            restTemplate.postForObject(url + "users", request, User.class);
+
+        }
+    }
+
+    private void postBook(String params){
+        List<String> items = Arrays.asList(params.split(","));
+        if (items.size() != 6) {
+            System.out.println(
+                    "Wrong parameters, should be: id, Title, author_id.AuthorName, timestamp, price, quantity!");
+        } else {
+            Book book = parseBook(items);
+            HttpEntity<Book> request = new HttpEntity<>(book);
+            restTemplate.postForObject(url + "books", request, Book.class);
+        }
     }
 
     /*private void printAllEntitiesWithPaging(CrudService service) {

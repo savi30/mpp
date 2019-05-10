@@ -1,1 +1,14 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+}
+
+dependencies {
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "2.9.4"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "2.9.4"
+    compile project(':core')
+    compile group: 'org.springframework', name: 'spring-webmvc', version: "4.1.6.RELEASE"
+}
+
 mainClassName = ''
