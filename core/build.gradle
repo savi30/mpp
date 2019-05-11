@@ -10,12 +10,17 @@ buildscript {
 
 dependencies {
     compile 'org.slf4j:slf4j-simple:1.6.1'
-    compile 'org.springframework.data:spring-data-jpa:2.1.6.RELEASE'
+    compile 'org.springframework.data:spring-data-jpa:2.1.7.RELEASE'
     compile 'mysql:mysql-connector-java:8.0.15'
-    compile 'org.springframework:spring-orm:2.1.6.RELEASE'
-    compile 'org.springframework:spring-context:2.1.6.RELEASE'
+    compile 'org.springframework:spring-orm:5.1.7.RELEASE'
+    compile 'org.springframework:spring-context:5.1.7.RELEASE'
     compile 'com.google.guava:guava:27.0.1-jre'
     compile 'org.hibernate:hibernate-entitymanager:5.4.2.Final'
+
+    compile group: 'com.github.ben-manes.caffeine', name: 'caffeine', version: "2.6.1"
+    compile group: 'com.zaxxer', name: 'HikariCP', version: "2.7.7"
+
+    compile group: 'javax.xml.bind', name: 'jaxb-api', version: "2.3.0"
     testImplementation 'junit:junit:4.12'
 }
 
