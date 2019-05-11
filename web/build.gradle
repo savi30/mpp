@@ -1,12 +1,38 @@
 buildscript {
     repositories {
         mavenCentral()
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-cargo-plugin:2.6.1'
     }
 }
 
+apply plugin: 'war'
+apply plugin: 'com.bmuschko.cargo'
+
 dependencies {
     compile project(':core')
-    compile group: 'org.springframework', name: 'spring-webmvc', version: "4.1.6.RELEASE"
+    compile group: 'org.springframework', name: 'spring-webmvc', version: "5.1.7.RELEASE"
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.4'
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "2.9.4"
+    compile group: 'com.fasterxml.jackson.core', name: 'jackson-core', version: "2.9.4"
+    compile 'org.codehaus.woodstox:woodstox-core-asl:4.4.1'
+    compile group: 'javax.servlet', name: 'javax.servlet-api', version: "3.1.0"
 }
+
+cargo {
+    containerId = 'tomcat8x'
+    local {
+        homeDir = file('/home/savi/dev/apache-tomcat-8.5.40')
+        outputFile = file('build/output.log')
+        startStopTimeout = 60000
+
+        containerProperties {
+            property 'cargo.tomcat.ajp.port', 9099
+        }
+    }
+}
+
 
 mainClassName = ''
