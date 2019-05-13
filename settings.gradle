@@ -8,4 +8,4 @@
  */
 
 rootProject.name = 'store'
-include 'core', 'web', 'client'
+include 'core', 'web'

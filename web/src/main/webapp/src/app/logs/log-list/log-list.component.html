@@ -1,0 +1,27 @@
+<mat-grid-list cols="2">
+  <mat-grid-tile>
+    <mat-list>
+      <app-log-entry *ngFor="let log of logs" [logEntry]="log"
+                     (selectionChange)="selectionChange($event)"></app-log-entry>
+    </mat-list>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="container" *ngIf="selectedEntry">
+      <mat-form-field>
+        <input matInput placeholder="Id" [ngModel]="selectedEntry.id">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Book" [ngModel]="selectedEntry.book.name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="User" [ngModel]="selectedEntry.user.name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Date" [ngModel]="selectedEntry.date">
+      </mat-form-field>
+      <div>
+        <button (click)="delete()" mat-raised-button>DELETE</button>
+      </div>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

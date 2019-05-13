@@ -1,0 +1,32 @@
+<mat-grid-list cols="2">
+  <mat-grid-tile>
+    <mat-list>
+      <app-book *ngFor="let book of currentPage" [book]="book" (selectionChange)="selectionChange($event)"></app-book>
+    </mat-list>
+    <mat-paginator #paginator
+                   [length]="books?.length"
+                   (page)="pageChanged($event)"
+                   [pageSize]="pageSize">
+    </mat-paginator>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="container" *ngIf="selectedBook">
+      <mat-form-field>
+        <input matInput placeholder="Title" [(ngModel)]="selectedBook.name">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Price" [(ngModel)]="selectedBook.price">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Quantity" [(ngModel)]="selectedBook.quantity">
+      </mat-form-field>
+      <mat-form-field>
+        <input matInput placeholder="Year" [(ngModel)]="selectedBook.publishYear">
+      </mat-form-field>
+      <div>
+        <button (click)="save()" mat-raised-button>SAVE</button>
+        <button (click)="delete()" mat-raised-button>DELETE</button>
+      </div>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

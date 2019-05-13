@@ -2,8 +2,8 @@ package bookstore.core.repository.logs;
 
 import bookstore.core.domain.logs.LogsEntry;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
-public interface LogsRepository extends CrudRepository<LogsEntry, String> {
+@Repository
+public interface LogsRepository extends CrudRepository<LogsEntry, Long> {
 }

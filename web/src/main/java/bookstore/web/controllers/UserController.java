@@ -2,40 +2,42 @@ package bookstore.web.controllers;
 
 import bookstore.core.domain.user.User;
 import bookstore.core.service.user.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping("/users")
 public class UserController {
 
-    @Autowired
-    private UserService userService;
+    private final UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<User> getUsers() {
+    public List<User> get() {
         return (List<User>) userService.findAll();
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public User getById(@PathVariable String id) {
+    public User get(@PathVariable String id) {
         return userService.findById(id).get();
     }
 
     @RequestMapping(value = "/username/{username}", method = RequestMethod.GET)
-    public List<User> getBooksByAuthor(@PathVariable String username) {
+    public List<User> getByUsername(@PathVariable String username) {
         return (List<User>) userService.filterUsersByName(username);
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public User updateUser(@RequestBody User user) {
+    public User update(@RequestBody User user) {
         return userService.update(user);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public void saveUser(@RequestBody User user) {
+    public void save(@RequestBody User user) {
         userService.save(user);
     }
 

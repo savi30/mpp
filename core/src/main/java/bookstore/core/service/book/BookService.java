@@ -22,15 +22,15 @@ import java.util.Optional;
 @Component
 public class BookService extends CrudService<String, Book> {
     private BookRepository repository;
-    @Autowired
-    private LogsRepository logsRepository;
+    private final LogsRepository logsRepository;
     private static final Logger log = LoggerFactory.getLogger(
             BookService.class);
 
     @Autowired
-    public BookService(BookRepository repository) {
+    public BookService(BookRepository repository, LogsRepository logsRepository) {
         super(repository);
         this.repository = repository;
+        this.logsRepository = logsRepository;
     }
 
     /**

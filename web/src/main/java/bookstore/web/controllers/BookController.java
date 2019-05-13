@@ -2,10 +2,14 @@ package bookstore.web.controllers;
 
 import bookstore.core.domain.book.Book;
 import bookstore.core.service.book.BookService;
+import bookstore.web.dto.BookDto;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @RestController
 @RequestMapping("/books")
@@ -13,45 +17,58 @@ public class BookController {
 
     @Autowired
     private BookService bookService;
+    @Autowired
+    private ConversionService conversionService;
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<Book> getBooks() {
-        return (List<Book>) bookService.findAll();
+    public List<BookDto> get() {
+        return StreamSupport.stream(bookService.findAll().spliterator(), false)
+                            .map(book -> conversionService.convert(book, BookDto.class)).collect(
+                        Collectors.toList());
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    public Book getById(@PathVariable String id) {
-        return bookService.findById(id).get();
+    public BookDto getById(@PathVariable String id) {
+        return conversionService.convert(bookService.findById(id).get(), BookDto.class);
     }
 
     @RequestMapping(value = "/author/{author}", method = RequestMethod.GET)
-    public List<Book> getBooksByAuthor(@PathVariable String author) {
-        return (List<Book>) bookService.filterBooksByAuthor(author);
+    public List<BookDto> getByAuthor(@PathVariable String author) {
+        return bookService.filterBooksByAuthor(author).stream()
+                          .map(book -> conversionService.convert(book, BookDto.class)).collect(
+                        Collectors.toList());
     }
 
     @RequestMapping(value = "/title/{title}", method = RequestMethod.GET)
-    public List<Book> getBooksByTitle(@PathVariable String title) {
-        return (List<Book>) bookService.filterBooksByTitle(title);
+    public List<BookDto> getByTitle(@PathVariable String title) {
+        return bookService.filterBooksByTitle(title).stream()
+                          .map(book -> conversionService.convert(book, BookDto.class)).collect(
+                        Collectors.toList());
     }
 
     @RequestMapping(value = "/quantity/{quantity}", method = RequestMethod.GET)
-    public List<Book> getBooksByQuantity(@PathVariable Integer quantity) {
-        return (List<Book>) bookService.filterBooksByQuantity(quantity);
+    public List<BookDto> getByQuantity(@PathVariable Integer quantity) {
+        return bookService.filterBooksByQuantity(quantity).stream()
+                          .map(book -> conversionService.convert(book, BookDto.class)).collect(
+                        Collectors.toList());
     }
 
     @RequestMapping(value = "/price/{p1}{p2}", method = RequestMethod.GET)
-    public List<Book> getBooksByPrice(@PathVariable Double p1, @PathVariable Double p2) {
-        return (List<Book>) bookService.filterBooksByPrice(p1, p2);
+    public List<BookDto> getsByPrice(@PathVariable Double p1, @PathVariable Double p2) {
+        return bookService.filterBooksByPrice(p1, p2).stream()
+                          .map(book -> conversionService.convert(book, BookDto.class)).collect(
+                        Collectors.toList());
     }
 
     @RequestMapping(value = "/update", method = RequestMethod.POST)
-    public Book updateBook(@RequestBody Book book) {
-        return bookService.update(book);
+    public BookDto update(@RequestBody BookDto dto) {
+        return conversionService
+                .convert(bookService.update(conversionService.convert(dto, Book.class)), BookDto.class);
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    public void saveBook(@RequestBody Book book) {
-        bookService.save(book);
+    public void save(@RequestBody BookDto dto) {
+        bookService.save(conversionService.convert(dto, Book.class));
     }
 
     @RequestMapping(value = "/{id}", method = RequestMethod.DELETE)

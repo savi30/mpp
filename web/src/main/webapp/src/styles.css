@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
+
+mat-card {
+  background-color: lightgray !important;
+}
+
+mat-card:hover {
+  background-color: whitesmoke !important;
+}
+
+nav {
+  background-color: lightgray !important;
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+}
+
+.container > * {
+  width: 100%;
+}

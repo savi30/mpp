@@ -1,0 +1,24 @@
+<mat-grid-list cols="2" rowHeight="2:2">
+  <mat-grid-tile>
+    <mat-list>
+      <app-user *ngFor="let user of currentPage" [user]="user" (selectionChange)="selectionChange($event)"></app-user>
+    </mat-list>
+    <mat-paginator #paginator
+                   [length]="users?.length"
+                   (page)="pageChanged($event)"
+                   [pageSize]="pageSize">
+    </mat-paginator>
+  </mat-grid-tile>
+  <mat-grid-tile>
+    <div class="container">
+      <mat-form-field>
+        <input matInput placeholder="Name" [(ngModel)]="selectedUser.name">
+      </mat-form-field>
+      <div>
+        <button (click)="save()" mat-raised-button>SAVE</button>
+        <button (click)="delete()" mat-raised-button>DELETE</button>
+        <button (click)="clear()" mat-raised-button>CLEAR</button>
+      </div>
+    </div>
+  </mat-grid-tile>
+</mat-grid-list>

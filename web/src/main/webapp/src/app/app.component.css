@@ -1,0 +1,7 @@
+[attribute|="mat-tab-nav-bar"] {
+  align-content: center;
+}
+
+[attribute|="mat-tab-nav-bar"] a {
+  display: inline-block;
+}

@@ -31,7 +31,7 @@ public class Entity<ID> {
     @Override
     public String toString() {
         return "Entity{" +
-                "id=" + id +
-                '}';
+               "id=" + id +
+               '}';
     }
 }

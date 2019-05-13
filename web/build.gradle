@@ -5,6 +5,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.bmuschko:gradle-cargo-plugin:2.6.1'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.1.4.RELEASE'
     }
 }
 
@@ -13,6 +14,8 @@ apply plugin: 'com.bmuschko.cargo'
 
 dependencies {
     compile project(':core')
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa:2.1.4.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.1.4.RELEASE'
     compile group: 'org.springframework', name: 'spring-webmvc', version: "5.1.7.RELEASE"
     compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.9.4'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: "2.9.4"
@@ -23,6 +26,12 @@ dependencies {
 
 cargo {
     containerId = 'tomcat8x'
+
+    deployable {
+        file = file("${project.projectDir}/build/libs/web-1.0-SNAPSHOT.war")
+        context = '/'
+    }
+
     local {
         homeDir = file('/home/savi/dev/apache-tomcat-8.5.40')
         outputFile = file('build/output.log')

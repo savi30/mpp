@@ -1,0 +1,15 @@
+<mat-card (click)="selectionChange.emit(book)">
+  <mat-card-header>
+    <mat-card-title>
+      Title: {{book.name}}
+    </mat-card-title>
+    <mat-card-subtitle>
+      {{book.price}}$
+    </mat-card-subtitle>
+  </mat-card-header>
+  <mat-card-content>
+    <span *ngFor="let author of book.authors">
+      -{{author.name}}-
+  </span>
+  </mat-card-content>
+</mat-card>

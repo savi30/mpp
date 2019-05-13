@@ -9,7 +9,6 @@ buildscript {
 }
 
 dependencies {
-    compile 'org.slf4j:slf4j-simple:1.6.1'
     compile 'org.springframework.data:spring-data-jpa:2.1.7.RELEASE'
     compile 'mysql:mysql-connector-java:8.0.15'
     compile 'org.springframework:spring-orm:5.1.7.RELEASE'
